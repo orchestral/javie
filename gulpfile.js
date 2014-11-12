@@ -23,6 +23,10 @@ var compression = {
 var files = [
     dir.includes+'/header.js',
     dir.src+'/application.js',
+    dir.modules+'/events/events.js',
+    dir.modules+'/logger/logger.js',
+    dir.modules+'/profiler/profiler.js',
+    dir.modules+'/request/request.js',
     dir.src+'/bootstrap.js'
 ];
 
