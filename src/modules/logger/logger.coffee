@@ -30,6 +30,7 @@ array_make = (args) ->
 
 dispatch = (type, message) ->
     return false unless enabled
+
     post(type, message)
 
 post = (type, message) ->
@@ -55,7 +56,9 @@ post = (type, message) ->
             true
 
 class Logger
+
     logs: []
+
     dispatch: (type, message) ->
         result = dispatch(type, message)
 
@@ -63,26 +66,36 @@ class Logger
         @logs.push(message)
 
         result
+
     info: ->
         @dispatch(level.INFO, array_make(arguments))
+
     debug: ->
         @dispatch(level.DEBUG, array_make(arguments))
+
     warning: ->
         @dispatch(level.WARNING, array_make(arguments))
+
     log: ->
         @dispatch(level.LOG, array_make(arguments))
+
     post: (type, message) ->
         @dispatch(type, [message])
 
 class LoggerRepository
+
     constructor: ->
         return LoggerRepository.make()
+
     @make: ->
         logger ?= new Logger
+
     @enable: ->
         enabled = true
+
     @disable: ->
         enabled = false
+
     @status: ->
         enabled
 

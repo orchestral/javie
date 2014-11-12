@@ -5,10 +5,10 @@ _ = require('underscore') if !_ and require?
 unless _
     throw new Error("underscore.js is missing")
 
-class Application
+array_make = (args) ->
+    Array.prototype.slice.call(args)
 
-    array_make = (args) ->
-        Array.prototype.slice.call(args)
+class Application
 
     config: {}
     environment: 'production'

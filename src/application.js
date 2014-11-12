@@ -1,5 +1,5 @@
 (function() {
-  var Application, root, _;
+  var Application, array_make, root, _;
 
   root = this;
 
@@ -13,14 +13,12 @@
     throw new Error("underscore.js is missing");
   }
 
+  array_make = function(args) {
+    return Array.prototype.slice.call(args);
+  };
+
   Application = (function() {
-    var array_make;
-
     function Application() {}
-
-    array_make = function(args) {
-      return Array.prototype.slice.call(args);
-    };
 
     Application.prototype.config = {};
 

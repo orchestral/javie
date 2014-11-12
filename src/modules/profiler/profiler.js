@@ -17,7 +17,7 @@
  */
 
 (function() {
-  var Profiler, ProfilerRepository, enabled, profilers, root;
+  var Profiler, ProfilerRepository, enabled, microtime, profilers, root, schema;
 
   profilers = {};
 
@@ -25,41 +25,39 @@
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
+  schema = function(id, type, start) {
+    if (id == null) {
+      id = '';
+    }
+    if (type == null) {
+      type = '';
+    }
+    if (start == null) {
+      start = microtime(true);
+    }
+    return {
+      id: id,
+      type: type,
+      start: start,
+      end: null,
+      total: null,
+      message: ''
+    };
+  };
+
+  microtime = function(seconds) {
+    var ms, sec, time;
+    time = new Date().getTime();
+    ms = parseInt(time / 1000, 10);
+    sec = "" + ((time - (ms * 1000)) / 1000) + " sec";
+    if (seconds === true) {
+      return ms;
+    } else {
+      return sec;
+    }
+  };
+
   Profiler = (function() {
-    var microtime, schema;
-
-    schema = function(id, type, start) {
-      if (id == null) {
-        id = '';
-      }
-      if (type == null) {
-        type = '';
-      }
-      if (start == null) {
-        start = microtime(true);
-      }
-      return {
-        id: id,
-        type: type,
-        start: start,
-        end: null,
-        total: null,
-        message: ''
-      };
-    };
-
-    microtime = function(seconds) {
-      var ms, sec, time;
-      time = new Date().getTime();
-      ms = parseInt(time / 1000, 10);
-      sec = "" + ((time - (ms * 1000)) / 1000) + " sec";
-      if (seconds === true) {
-        return ms;
-      } else {
-        return sec;
-      }
-    };
-
     Profiler.prototype.logs = null;
 
     Profiler.prototype.pair = null;

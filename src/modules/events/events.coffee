@@ -22,15 +22,18 @@ root = exports ? this
 
 _ = root._
 _ = require('underscore') if !_ and require?
+
 unless _
     throw new Error("underscore.js is missing")
 
 class EventDispatcher
+
     clone: (id) ->
         clonable =
             to: (cloneTo) ->
                 events[cloneTo] = _.clone(events[id])
                 true
+
     listen: (id, cb) ->
         if _.isFunction(cb) is no
             throw new Error("Callback is not a function")
@@ -43,8 +46,10 @@ class EventDispatcher
         events[id].push(cb)
 
         response
+
     listener: (id, cb) ->
         @listen(id, cb)
+
     fire: (id, options) ->
         me = this
         response = []
@@ -60,6 +65,7 @@ class EventDispatcher
         _.each(events[id], runEachEvent)
 
         response
+
     first: (id, options) ->
         me = this
         response = []
@@ -76,6 +82,7 @@ class EventDispatcher
         _.each(first, runEachEvent)
 
         response[0]
+
     until: (id, options) ->
         me = this
         response = null
@@ -91,9 +98,11 @@ class EventDispatcher
         _.each(events[id], runEachEvent)
 
         response
+
     flush: (id) ->
         events[id] = null unless _.isUndefined(events[id])
         true
+
     forget: (handler) ->
         me = this
         id = handler.id
@@ -114,8 +123,10 @@ class EventDispatcher
         true
 
 class EventRepository
+
     constructor: ->
         return EventRepository.make()
+
     @make: ->
         dispatcher ?= new EventDispatcher
 

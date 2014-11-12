@@ -19,34 +19,38 @@ profilers = {}
 enabled = false
 root = exports ? this
 
+schema = (id, type, start) ->
+    id ?= ''
+    type ?= ''
+    start ?= microtime(true)
+
+    {
+        id: id
+        type: type
+        start: start
+        end: null
+        total: null
+        message: ''
+    }
+
+microtime = (seconds) ->
+    time = new Date().getTime()
+    ms   = parseInt(time / 1000, 10)
+    sec  = "#{(time-(ms*1000))/1000} sec"
+
+    if seconds is yes then ms else sec
+
 class Profiler
-    schema = (id, type, start) ->
-        id ?= ''
-        type ?= ''
-        start ?= microtime(true)
-
-        {
-            id: id
-            type: type
-            start: start
-            end: null
-            total: null
-            message: ''
-        }
-    microtime = (seconds) ->
-        time = new Date().getTime()
-        ms   = parseInt(time / 1000, 10)
-        sec  = "#{(time-(ms*1000))/1000} sec"
-
-        if seconds is yes then ms else sec
 
     logs: null
     pair: null
     started: null
+
     constructor: ->
         @logs = []
         @pair = {}
         @started = microtime(true)
+
     time: (id, message) ->
         id ?= @logs.length
 
@@ -65,6 +69,7 @@ class Profiler
 
         console.time(id)
         id
+
     timeEnd: (id, message) ->
         id ?= @logs.length
 
@@ -89,9 +94,11 @@ class Profiler
         @logs[key] = log
 
         total
+
     trace: ->
         console.trace() if enabled
         true
+
     output: (auto) ->
         if auto is yes then enabled = true
 
@@ -106,15 +113,20 @@ class Profiler
         true
 
 class ProfilerRepository
+
     constructor: (name) ->
         return ProfilerRepository.make(name)
+
     @make: (name) ->
         name = 'default' unless name? or name isnt ''
         profilers[name] ?= new Profiler
+
     @enable: ->
         enabled = true
+
     @disable: ->
         enabled = false
+
     @status: ->
         enabled
 

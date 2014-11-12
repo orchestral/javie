@@ -37,14 +37,41 @@ api = root.$
 if typeof api is 'undefined' or api is null
     throw new Error("Required jQuery or Zepto object is missing")
 
-class Request
-    json_parse = (data) ->
-        if _.isString(data) is yes
-            try data = api.parseJSON(data)
-            catch e
-                # do nothing
+find_request = (name) ->
+    request = null
+    unless _.isUndefined(requests[name])
+        parent = requests[name]
 
-        data
+        if parent.executed is yes
+            child_name = _.uniqueId("#{name}_")
+            child = new Request
+
+            dispatcher.clone("Request.onError: #{name}").to("Request.onError: #{child_name}");
+            dispatcher.clone("Request.onComplete: #{name}").to("Request.onComplete: #{child_name}");
+            dispatcher.clone("Request.beforeSend: #{name}").to("Request.beforeSend: #{child_name}");
+
+            child.put(parent.config)
+            request = child
+
+        request = parent
+    else
+        request = new Request
+        request.config = _.defaults(request.config, RequestRepository.config)
+        request.put({'name': name})
+        requests[name] = request
+
+    request
+
+json_parse = (data) ->
+    if _.isString(data) is yes
+        try data = api.parseJSON(data)
+        catch e
+            # do nothing
+
+    data
+
+class Request
+
     executed: false
     response: null
     config:
@@ -56,15 +83,20 @@ class Request
         'dataType': 'json'
         'id': ''
         'object': null
+
     get: (key, alt) ->
         return @config[key] if typeof @config[key] isnt 'undefined'
+
         alt ?= null
+
     put: (key, value) ->
         config = key
         unless _.isObject(key)
             config = {}
             config[key] = value
+
         @config = _.defaults(config, @config)
+
     to: (url, object, data_type) ->
         @put({'dataType': data_type ?= 'json'})
         request_method = ['POST', 'GET', 'PUT', 'DELETE']
@@ -102,7 +134,9 @@ class Request
 
         id = api(@get('object')).attr('id')
         @put({'id': "##{id}"}) if typeof id isnt 'undefined'
+
         @
+
     execute: (data) ->
         me = @
 
@@ -140,52 +174,37 @@ class Request
 
                 true
         api.ajax(request)
+
         @
 
 class RequestRepository
-    find_request = (name) ->
-        request = null
-        unless _.isUndefined(requests[name])
-            parent = requests[name]
-
-            if parent.executed is yes
-                child_name = _.uniqueId("#{name}_")
-                child = new Request
-
-                dispatcher.clone("Request.onError: #{name}").to("Request.onError: #{child_name}");
-                dispatcher.clone("Request.onComplete: #{name}").to("Request.onComplete: #{child_name}");
-                dispatcher.clone("Request.beforeSend: #{name}").to("Request.beforeSend: #{child_name}");
-
-                child.put(parent.config)
-                request = child
-            request = parent
-        else
-            request = new Request
-            request.config = _.defaults(request.config, RequestRepository.config)
-            request.put({'name': name})
-            requests[name] = request
-
-        request
 
     constructor: (name) ->
         return RequestRepository.make(name)
+
     @make: (name) ->
         name = 'default' unless _.isString(name)
+
         find_request(name)
+
     @config:
         'baseUrl': null
         'onError': (data, status) ->
         'beforeSend': (data, status) ->
         'onComplete': (data, status) ->
+
     @get: (key, alt) ->
         alt ?= null
         return alt if _.isUndefined(@config[key])
+
         @config[key]
+
     @put: (key, value) ->
         config = key
         unless _.isObject(key)
             config = {}
             config[key] = value
+
         @config = _.defaults(config, @config)
 
 if exports?
