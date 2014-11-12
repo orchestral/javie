@@ -54,3 +54,5 @@ gulp.task('js.min', ['js'], function () {
         .pipe(uglify(compression))
         .pipe(gulp.dest(dir.dist));
 });
+
+gulp.task('default', ['modules.coffee', 'coffee', 'js', 'js.min']);
