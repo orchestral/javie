@@ -55,4 +55,10 @@ gulp.task('js.min', ['js'], function () {
         .pipe(gulp.dest(dir.dist));
 });
 
-gulp.task('default', ['modules.coffee', 'coffee', 'js', 'js.min']);
+gulp.task('watch', function () {
+    gulp.watch(dir.src+'/*.coffee', ['coffee']);
+    gulp.watch(dir.src+'/modules/**/*.coffee', ['modules.coffee']);
+    gulp.watch(files, ['js', 'js.min']);
+});
+
+gulp.task('default', ['modules.coffee', 'coffee', 'js', 'js.min', 'watch']);

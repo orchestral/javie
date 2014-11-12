@@ -13,17 +13,20 @@ class Application
     instances: {}
     detectEnvironment: (environment) ->
         environment = environment.apply(root) if _.isFunction(environment) is yes
+
         @environment = environment
     env: ->
-        return @environment
+        @environment
     get: (key, alt) ->
         return @config[key] if typeof @config[key] isnt 'undefined'
+
         alt ?= null
     put: (key, value) ->
         config = key
         unless _.isObject(config)
             config = {}
             config[key] = value
+
         @config = _.defaults(config, @config)
     bind: (name, instance) ->
         @instances[name] = instance
@@ -33,15 +36,18 @@ class Application
         base = @resolve(name)
 
         return base.apply(root, options) if _.isFunction(base)
+
         base
     resolve: (name) ->
         base = @instances[name]
-        base = null if base is 'undefined'
+        base = null if _.isUndefined(base)
+
         base
     when: (environment, callback) ->
         env = @ENV if @ENV?
         env = @environment if @environment?
-        @run(callback) if env is environment or _.isNull(environment)
+
+        @run(callback) if env is environment or environment is '*'
     run: (callback) ->
         callback.call(@) if _.isFunction(callback)
 

@@ -74,7 +74,7 @@
     Application.prototype.resolve = function(name) {
       var base;
       base = this.instances[name];
-      if (base === 'undefined') {
+      if (_.isUndefined(base)) {
         base = null;
       }
       return base;
@@ -88,7 +88,7 @@
       if (this.environment != null) {
         env = this.environment;
       }
-      if (env === environment || _.isNull(environment)) {
+      if (env === environment || environment === '*') {
         return this.run(callback);
       }
     };
