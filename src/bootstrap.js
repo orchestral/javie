@@ -14,7 +14,10 @@
   });
 
   javie.bind('profiler', function(name) {
-    return new javie.Profiler(name);
+    if (name != null) {
+      return new javie.Profiler(name);
+    }
+    return javie.Profiler;
   });
 
   javie.bind('log', function() {
@@ -22,7 +25,10 @@
   });
 
   javie.bind('request', function(name) {
-    return new javie.Request(name);
+    if (name != null) {
+      return new javie.Request(name);
+    }
+    return javie.Request;
   });
 
 }).call(this);
