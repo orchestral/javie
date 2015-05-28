@@ -81,7 +81,7 @@ class EventDispatcher
 
     responses[0]
   until: (id, options) ->
-    me = this
+    me = @
     responses = null
 
     unless id?
@@ -101,7 +101,7 @@ class EventDispatcher
     true
 
   forget: (handler) ->
-    me = this
+    me = @
     id = handler.id
     ref = handler.callback;
 
