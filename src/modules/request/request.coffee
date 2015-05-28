@@ -20,9 +20,9 @@ requests = {}
 dispatcher = null
 
 if typeof root.Javie is 'undefined'
-    throw new Error("Javie is missing")
+  throw new Error "Javie is missing"
 if typeof root.Javie.EventDispatcher is 'undefined'
-    throw new Error("Javie.EventDispatcher is missing")
+  throw new Error "Javie.EventDispatcher is missing"
 
 dispatcher = root.Javie.EventDispatcher.make()
 
@@ -30,185 +30,177 @@ _ = root._
 _ = require('underscore') if !_ and require?
 
 unless _
-    throw new Error("underscore.js is missing")
+  throw new Error "underscore.js is missing"
 
 api = root.$
 
 if typeof api is 'undefined' or api is null
-    throw new Error("Required jQuery or Zepto object is missing")
+  throw new Error "Required jQuery or Zepto object is missing"
 
 find_request = (name) ->
-    request = null
-    unless _.isUndefined(requests[name])
-        parent = requests[name]
+  request = null
 
-        if parent.executed is yes
-            child_name = _.uniqueId("#{name}_")
-            child = new Request
+  unless _.isUndefined(requests[name])
+    parent = requests[name]
 
-            dispatcher.clone("Request.onError: #{name}").to("Request.onError: #{child_name}");
-            dispatcher.clone("Request.onComplete: #{name}").to("Request.onComplete: #{child_name}");
-            dispatcher.clone("Request.beforeSend: #{name}").to("Request.beforeSend: #{child_name}");
+    if parent.executed is yes
+      child_name = _.uniqueId "#{name}_"
+      child = new Request
 
-            child.put(parent.config)
-            request = child
+      dispatcher.clone("Request.onError: #{name}").to("Request.onError: #{child_name}")
+      dispatcher.clone("Request.onComplete: #{name}").to("Request.onComplete: #{child_name}")
+      dispatcher.clone("Request.beforeSend: #{name}").to("Request.beforeSend: #{child_name}")
 
-        request = parent
-    else
-        request = new Request
-        request.config = _.defaults(request.config, RequestRepository.config)
-        request.put({'name': name})
-        requests[name] = request
+      child.put parent.config
+      request = child
 
-    request
+    request = parent
+  else
+    request = new Request
+    request.config = _.defaults request.config, RequestRepository.config
+    request.put { 'name': name }
+    requests[name] = request
+
+  request
 
 json_parse = (data) ->
-    if _.isString(data) is yes
-        try data = api.parseJSON(data)
-        catch e
-            # do nothing
+  if _.isString(data) is yes
+    try
+      data = api.parseJSON data
+    catch e
+      # do nothing
 
-    data
+  data
 
 class Request
+  executed: false
+  response: null
+  config:
+    'name': ''
+    'type': 'GET'
+    'uri': ''
+    'query': ''
+    'data': ''
+    'dataType': 'json'
+    'id': ''
+    'object': null
+  get: (key, alt) ->
+    return @config[key] if typeof @config[key] isnt 'undefined'
 
-    executed: false
-    response: null
-    config:
-        'name': ''
-        'type': 'GET'
-        'uri': ''
-        'query': ''
-        'data': ''
-        'dataType': 'json'
-        'id': ''
-        'object': null
+    alt ?= null
+  put: (key, value) ->
+    config = key
+    unless _.isObject(key)
+      config = {}
+      config[key] = value
 
-    get: (key, alt) ->
-        return @config[key] if typeof @config[key] isnt 'undefined'
+    @config = _.defaults config, @config
+  to: (url, object, data_type) ->
+    @put { 'dataType': data_type ?= 'json' }
+    request_method = ['POST', 'GET', 'PUT', 'DELETE']
 
-        alt ?= null
+    if _.isUndefined(url)
+      throw new Error "Missing required url parameter"
 
-    put: (key, value) ->
-        config = key
-        unless _.isObject(key)
-            config = {}
-            config[key] = value
+    unless object?
+      object = root.document
 
-        @config = _.defaults(config, @config)
+    @put {'object': object }
 
-    to: (url, object, data_type) ->
-        @put({'dataType': data_type ?= 'json'})
-        request_method = ['POST', 'GET', 'PUT', 'DELETE']
+    segment = url.split ' '
 
-        if _.isUndefined(url)
-            throw new Error("Missing required url parameter")
+    if segment.length is 1
+      uri = segment[0]
+    else
+      if _.indexOf(request_method, segment[0]) isnt -1
+        type = segment[0]
 
-        unless object?
-            object = root.document
+      uri = segment[1]
 
-        @put({'object': object})
+      if type isnt 'GET'
+        queries = uri.split '?'
 
-        segment = url.split(' ')
+        if queries.length > 1
+          url = queries[0]
+          @put { 'query': queries[1] }
 
-        if segment.length is 1
-            uri = segment[0]
-        else
-            if _.indexOf(request_method, segment[0]) isnt -1
-                type = segment[0]
+      uri = uri.replace ':baseUrl', @get('baseUrl', '')
+      @put
+        'type': type
+        'uri': uri
 
-            uri = segment[1]
+    id = api(@get('object')).attr('id')
+    @put { 'id': "##{id}" } if typeof id isnt 'undefined'
 
-            if type isnt 'GET'
-                queries = uri.split('?')
+    @
+  execute: (data) ->
+    me = @
 
-                if queries.length > 1
-                    url = queries[0]
-                    @put({'query': queries[1]})
+    name = @get 'name'
 
-            uri = uri.replace(':baseUrl', @get('baseUrl', ''))
-            @put({
-                'type': type
-                'uri': uri
-            })
+    unless _.isObject(data)
+      data = "#{api(@get('object')).serialize()}&#{@get('query')}"
+      data = '' if data is '?&'
 
-        id = api(@get('object')).attr('id')
-        @put({'id': "##{id}"}) if typeof id isnt 'undefined'
+    @executed = true
 
-        @
+    dispatcher.fire 'Request.beforeSend', [@]
+    dispatcher.fire "Request.beforeSend: #{name}", [@]
+    @config['beforeSend'] @
 
-    execute: (data) ->
-        me = @
+    request =
+      'type': @get 'type'
+      'dataType': @get 'dataType'
+      'url': @get 'uri'
+      'data': data
+      'complete': (xhr) ->
+        data = json_parse xhr.responseText
+        status = xhr.status
+        me.response = xhr
 
-        name = @get('name')
+        if !_.isUndefined(data) and data.hasOwnProperty('errors')
+          dispatcher.fire 'Request.onError', [data.errors, status, me]
+          dispatcher.fire "Request.onError: #{name}", [data.errors, status, me]
+          me.config['onError'] data.errors, status, me
+          data.errors = null
 
-        unless _.isObject(data)
-            data = "#{api(@get('object')).serialize()}&#{@get('query')}"
-            data = '' if data is '?&'
+        dispatcher.fire 'Request.onComplete', [data, status, me]
+        dispatcher.fire "Request.onComplete: #{name}", [data, status, me]
+        me.config['onComplete'] data, status, me
 
-        @executed = true
+        true
 
-        dispatcher.fire('Request.beforeSend', [@])
-        dispatcher.fire("Request.beforeSend: #{name}", [@])
-        @config['beforeSend'](@)
+    api.ajax request
 
-        request =
-            'type': @get('type')
-            'dataType': @get('dataType')
-            'url': @get('uri')
-            'data': data
-            'complete': (xhr) ->
-                data = json_parse(xhr.responseText)
-                status = xhr.status
-                me.response = xhr
-
-                if !_.isUndefined(data) and data.hasOwnProperty('errors')
-                    dispatcher.fire('Request.onError', [data.errors, status, me])
-                    dispatcher.fire("Request.onError: #{name}", [data.errors, status, me])
-                    me.config['onError'](data.errors, status, me)
-                    data.errors = null
-
-                dispatcher.fire('Request.onComplete', [data, status, me])
-                dispatcher.fire("Request.onComplete: #{name}", [data, status, me])
-                me.config['onComplete'](data, status, me)
-
-                true
-        api.ajax(request)
-
-        @
+    @
 
 class RequestRepository
+  constructor: (name) ->
+    return RequestRepository.make name
+  @make: (name) ->
+    name = 'default' unless _.isString(name)
 
-    constructor: (name) ->
-        return RequestRepository.make(name)
+    find_request name
+  @config:
+    'baseUrl': null
+    'onError': (data, status) ->
+    'beforeSend': (data, status) ->
+    'onComplete': (data, status) ->
+  @get: (key, alt) ->
+    alt ?= null
+    return alt if _.isUndefined(@config[key])
 
-    @make: (name) ->
-        name = 'default' unless _.isString(name)
+    @config[key]
+  @put: (key, value) ->
+    config = key
+    unless _.isObject(key)
+      config = {}
+      config[key] = value
 
-        find_request(name)
-
-    @config:
-        'baseUrl': null
-        'onError': (data, status) ->
-        'beforeSend': (data, status) ->
-        'onComplete': (data, status) ->
-
-    @get: (key, alt) ->
-        alt ?= null
-        return alt if _.isUndefined(@config[key])
-
-        @config[key]
-
-    @put: (key, value) ->
-        config = key
-        unless _.isObject(key)
-            config = {}
-            config[key] = value
-
-        @config = _.defaults(config, @config)
+    @config = _.defaults config, @config
 
 if exports?
-    module.exports = RequestRepository if module? and module.exports
-    root.Request = RequestRepository
+  module.exports = RequestRepository if module? and module.exports
+  root.Request = RequestRepository
 else
-    root.Javie.Request = RequestRepository
+  root.Javie.Request = RequestRepository

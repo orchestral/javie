@@ -16,8 +16,9 @@
   javie.bind('profiler', function(name) {
     if (name != null) {
       return new javie.Profiler(name);
+    } else {
+      return javie.Profiler;
     }
-    return javie.Profiler;
   });
 
   javie.bind('log', function() {
@@ -27,8 +28,9 @@
   javie.bind('request', function(name) {
     if (name != null) {
       return new javie.Request(name);
+    } else {
+      return javie.Request;
     }
-    return javie.Request;
   });
 
 }).call(this);

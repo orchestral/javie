@@ -51,11 +51,27 @@
         config = {};
         config[key] = value;
       }
-      return this.config = _.defaults(config, this.config);
+      this.config = _.defaults(config, this.config);
+      return this;
+    };
+
+    Application.prototype.on = function(name, callback) {
+      var dispatcher;
+      dispatcher = this.instances['event'];
+      dispatcher.listen(name, callback);
+      return this;
+    };
+
+    Application.prototype.trigger = function(name, options) {
+      var dispatcher;
+      dispatcher = this.instances['event'];
+      dispatcher.fire(name, options);
+      return this;
     };
 
     Application.prototype.bind = function(name, instance) {
-      return this.instances[name] = instance;
+      this.instances[name] = instance;
+      return this;
     };
 
     Application.prototype.make = function(name) {
@@ -65,17 +81,19 @@
       base = this.resolve(name);
       if (_.isFunction(base)) {
         return base.apply(root, options);
+      } else {
+        return base;
       }
-      return base;
     };
 
     Application.prototype.resolve = function(name) {
       var base;
       base = this.instances[name];
       if (_.isUndefined(base)) {
-        base = null;
+        return null;
+      } else {
+        return base;
       }
-      return base;
     };
 
     Application.prototype.when = function(environment, callback) {
