@@ -162,7 +162,7 @@
           'uri': uri
         });
       }
-      id = api(this.get('object')).attr('id');
+      id = api(object).attr('id');
       if (typeof id !== 'undefined') {
         this.put({
           'id': "#" + id

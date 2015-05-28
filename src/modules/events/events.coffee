@@ -30,7 +30,7 @@ class EventDispatcher
   clone: (id) ->
     clonable =
       to: (cloneTo) ->
-        events[cloneTo] = _.clone(events[id])
+        events[cloneTo] = _.clone events[id]
         true
   listen: (id, callback) ->
     if _.isFunction(callback) is no

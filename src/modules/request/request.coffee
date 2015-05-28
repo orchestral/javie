@@ -105,7 +105,7 @@ class Request
     unless object?
       object = root.document
 
-    @put {'object': object }
+    @put { 'object': object }
 
     segment = url.split ' '
 
@@ -129,7 +129,7 @@ class Request
         'type': type
         'uri': uri
 
-    id = api(@get('object')).attr('id')
+    id = api(object).attr('id')
     @put { 'id': "##{id}" } if typeof id isnt 'undefined'
 
     @
