@@ -60,7 +60,7 @@ class Application
     resolved
   resolve: (name) ->
     base = @instances[name]
-    if _.isUndefined(base) then null else base[0]
+    if _.isUndefined(base) then null else base
   singleton: (name, instance) ->
     @instances[name] = [instance, true, false]
     @
