@@ -1,10 +1,9 @@
 root = @
 javie = root.Javie
 
-javie.bind 'underscore', ->
-  root._
+javie.singleton 'underscore', root._
 
-javie.bind 'event', ->
+javie.singleton 'event', ->
   new javie.EventDispatcher
 
 javie.bind 'profiler', (name) ->

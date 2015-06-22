@@ -5,11 +5,9 @@
 
   javie = root.Javie;
 
-  javie.bind('underscore', function() {
-    return root._;
-  });
+  javie.singleton('underscore', root._);
 
-  javie.bind('event', function() {
+  javie.singleton('event', function() {
     return new javie.EventDispatcher;
   });
 
