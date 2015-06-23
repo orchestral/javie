@@ -55,13 +55,17 @@ app.singleton('log.writer', function () {
   return new _modulesLogLogEs62['default']();
 });
 
-app.bind('profiler', function (name) {
+app.bind('profiler', function () {
+  var name = arguments[0] === undefined ? null : arguments[0];
+
   if (name != null) return (0, _modulesProfilerProfilerEs62['default'])(name);
 
   return _modulesProfilerProfilerEs62['default'];
 });
 
-app.bind('request', function (name) {
+app.bind('request', function () {
+  var name = arguments[0] === undefined ? null : arguments[0];
+
   if (name != null) return (0, _modulesRequestRequestEs62['default'])(name);
 
   return _modulesRequestRequestEs62['default'];
