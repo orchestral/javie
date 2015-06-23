@@ -1,24 +1,15 @@
-var gulp = require('gulp'),
-  coffee = require('gulp-coffee'),
-  concat = require('gulp-concat'),
-  csso = require('gulp-csso'),
-  less = require('gulp-less'),
-  rename = require('gulp-rename'),
-  uglify = require('gulp-uglify');
+var dir
+    , gulp = require('gulp')
+    , rename = require('gulp-rename')
+    , uglify = require('gulp-uglify')
+    , elixir = require('laravel-elixir');
 
-var dir = {
+dir = {
   src: 'src',
   dist: 'dist',
   includes: 'src/includes',
   modules: 'src/modules'
 }
-
-var compression = {
-  outSourceMaps: false,
-  output: {
-    max_line_len: 150
-  }
-};
 
 var files = [
   dir.includes+'/header.js',
@@ -30,35 +21,27 @@ var files = [
   dir.src+'/bootstrap.js'
 ];
 
-gulp.task('coffee', ['modules.coffee'], function () {
-  return gulp.src(dir.src+'/*.coffee')
-    .pipe(coffee())
-    .pipe(gulp.dest(dir.src));
-});
+gulp.task('js.min', function () {
+  var compression = {
+    outSourceMaps: false,
+    output: {
+      max_line_len: 150
+    }
+  };
 
-gulp.task('modules.coffee', function () {
-  return gulp.src(dir.src+'/modules/**/*.coffee')
-    .pipe(coffee())
-    .pipe(gulp.dest(dir.src+'/modules/'));
-});
-
-gulp.task('js', ['coffee'], function () {
-  return gulp.src(files)
-    .pipe(concat('javie.js'))
-    .pipe(gulp.dest(dir.dist));
-});
-
-gulp.task('js.min', ['js'], function () {
   return gulp.src(dir.dist+'/javie.js')
     .pipe(rename('javie.min.js'))
     .pipe(uglify(compression))
     .pipe(gulp.dest(dir.dist));
 });
 
-gulp.task('watch', function () {
-  gulp.watch(dir.src+'/*.coffee', ['coffee']);
-  gulp.watch(dir.src+'/modules/**/*.coffee', ['modules.coffee']);
-  gulp.watch(files, ['js', 'js.min']);
-});
+elixir(function (mix) {
+  mix.browserify('app.js', dir.src+'/bundle.js', dir.src);
 
-gulp.task('default', ['modules.coffee', 'coffee', 'js', 'js.min']);
+  mix.scripts([
+    'includes/header.js',
+    'bundle.js'
+  ], dir.dist+'/javie.js', dir.src);
+
+  mix.task('js.min', dir.src+'/**/*.js');
+});
