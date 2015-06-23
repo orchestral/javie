@@ -17,19 +17,16 @@ function schema (id = '', type = '', start = null) {
 }
 
 class Handler {
-  name = null
-  logs = []
-  pair = {}
-  started = null
-
   constructor(name) {
     this.name = name
+    this.logs = []
+    this.pair = {}
     this.started = Util.microtime()
   }
 
   time(id, message) {
     if (!enabled)
-      return ;
+      return null;
 
     if (id == null)
       id = this.logs.length
@@ -53,7 +50,7 @@ class Handler {
 
   timeEnd(id, message) {
     if (!enabled)
-      return ;
+      return null;
 
     if (id == null)
       id = this.logs.length
@@ -92,7 +89,7 @@ class Handler {
       enabled = true
 
     if (!enabled)
-      return ;
+      return null;
 
     this.logs.forEach(log => {
       if (log.type == 'time') {

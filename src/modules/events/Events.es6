@@ -1,4 +1,4 @@
-let _ = require('../../vendor/underscore')
+import _ from '../../vendor/underscore'
 let dispatcher = null
 let events = {}
 
@@ -53,7 +53,7 @@ class Dispatcher {
   }
 
   flush(id) {
-    if (_.isArray(events[id]))
+    if (!_.isNull(events[id]))
       events[id] = null
   }
 
@@ -76,11 +76,11 @@ class Dispatcher {
     })
   }
 
-  dispatch(queued = [], options = [], halt = false) {
+  dispatch(queued, options = [], halt = false) {
     let responses = []
 
     if (!_.isArray(queued))
-      return ;
+      return null;
 
     _.each(queued, (callback, key) => {
       if (halt == false || responses.length == 0) {

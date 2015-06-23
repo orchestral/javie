@@ -19,17 +19,19 @@ function json_parse(data) {
 }
 
 class Handler {
-  executed = false
-  response = null
-  config = {
-    name: '',
-    type: 'GET',
-    uri: '',
-    query: '',
-    data: '',
-    dataType: 'json',
-    id: '',
-    object: null
+  constructor() {
+    this.executed = false
+    this.response = null
+    this.config = {
+      name: '',
+      type: 'GET',
+      uri: '',
+      query: '',
+      data: '',
+      dataType: 'json',
+      id: '',
+      object: null
+    }
   }
 
   get(key, defaults = null) {

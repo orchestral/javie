@@ -272,9 +272,14 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _ = require("../../vendor/underscore");
+var _vendorUnderscore = require("../../vendor/underscore");
+
+var _vendorUnderscore2 = _interopRequireDefault(_vendorUnderscore);
+
 var dispatcher = null;
 var events = {};
 
@@ -288,21 +293,21 @@ var Dispatcher = (function () {
     value: function clone(id) {
       return clonable = {
         to: function to(_to) {
-          return events[_to] = _.clone(events[id]);
+          return events[_to] = _vendorUnderscore2["default"].clone(events[id]);
         }
       };
     }
   }, {
     key: "listen",
     value: function listen(id, callback) {
-      if (!_.isFunction(callback)) throw new Error("Callback is not a function.");
+      if (!_vendorUnderscore2["default"].isFunction(callback)) throw new Error("Callback is not a function.");
 
       var response = {
         id: id,
         callback: callback
       };
 
-      if (!_.isArray(events[id])) events[id] = [];
+      if (!_vendorUnderscore2["default"].isArray(events[id])) events[id] = [];
 
       events[id].push(callback);
 
@@ -339,7 +344,7 @@ var Dispatcher = (function () {
   }, {
     key: "flush",
     value: function flush(id) {
-      if (_.isArray(events[id])) events[id] = null;
+      if (!_vendorUnderscore2["default"].isNull(events[id])) events[id] = null;
     }
   }, {
     key: "forget",
@@ -348,11 +353,11 @@ var Dispatcher = (function () {
       var id = handler.id;
       var ref = handler.callback;
 
-      if (!_.isString(id)) throw new Error("Event ID [" + id + "] is not provided.");
-      if (!_.isFunction(ref)) throw new Error("Callback is not a function.");
-      if (!_.isArray(events[id])) throw new Error("Event ID [" + id + "] is not available.");
+      if (!_vendorUnderscore2["default"].isString(id)) throw new Error("Event ID [" + id + "] is not provided.");
+      if (!_vendorUnderscore2["default"].isFunction(ref)) throw new Error("Callback is not a function.");
+      if (!_vendorUnderscore2["default"].isArray(events[id])) throw new Error("Event ID [" + id + "] is not available.");
 
-      _.each(events[id], function (callback, key) {
+      _vendorUnderscore2["default"].each(events[id], function (callback, key) {
         if (ref == callback) {
           events[id].splice(key, 1);
         }
@@ -360,9 +365,7 @@ var Dispatcher = (function () {
     }
   }, {
     key: "dispatch",
-    value: function dispatch() {
-      var queued = arguments[0] === undefined ? [] : arguments[0];
-
+    value: function dispatch(queued) {
       var _this = this;
 
       var options = arguments[1] === undefined ? [] : arguments[1];
@@ -370,9 +373,9 @@ var Dispatcher = (function () {
 
       var responses = [];
 
-      if (!_.isArray(queued)) return;
+      if (!_vendorUnderscore2["default"].isArray(queued)) return null;
 
-      _.each(queued, function (callback, key) {
+      _vendorUnderscore2["default"].each(queued, function (callback, key) {
         if (halt == false || responses.length == 0) {
           var applied = callback.apply(_this, options);
           responses.push(applied);
@@ -436,9 +439,7 @@ var level = {
 };
 
 function _dispatch(type, message) {
-  if (enabled) {
-    post(type, message);
-  }
+  if (enabled) return post(type, message);
 }
 
 function post(type, message) {
@@ -447,21 +448,22 @@ function post(type, message) {
   switch (type) {
     case 'info':
       c.info(message);
-      break;
+      return true;
     case 'debug' && c.debug != null:
       c.debug(message);
-      break;
+      return true;
     case 'warning':
       c.warn(message);
-      break;
+      return true;
     case 'error' && c.error != null:
       c.error(message);
-      break;
+      return true;
     case 'log':
       c.log(message);
-      break;
+      return true;
     default:
       c.log('[' + type.toUpperCase() + ']', message);
+      return true;
   }
 }
 
@@ -478,31 +480,33 @@ var Writer = (function () {
       var result = _dispatch(type, message);
       message.unshift(type);
       this.logs.push(message);
+
+      return result;
     }
   }, {
     key: 'info',
     value: function info() {
-      this.dispatch(level.INFO, Util.array_make(arguments));
+      return this.dispatch(level.INFO, Util.array_make(arguments));
     }
   }, {
     key: 'debug',
     value: function debug() {
-      this.dispatch(level.DEBUG, Util.array_make(arguments));
+      return this.dispatch(level.DEBUG, Util.array_make(arguments));
     }
   }, {
     key: 'warning',
     value: function warning() {
-      this.dispatch(level.WARNING, Util.array_make(arguments));
+      return this.dispatch(level.WARNING, Util.array_make(arguments));
     }
   }, {
     key: 'log',
     value: function log() {
-      this.dispatch(level.LOG, Util.array_make(arguments));
+      return this.dispatch(level.LOG, Util.array_make(arguments));
     }
   }, {
     key: 'post',
-    value: function post(type, mesage) {
-      this.dispatch(type, [message]);
+    value: function post(type, message) {
+      return this.dispatch(type, [message]);
     }
   }]);
 
@@ -587,19 +591,16 @@ var Handler = (function () {
   function Handler(name) {
     _classCallCheck(this, Handler);
 
-    this.name = null;
+    this.name = name;
     this.logs = [];
     this.pair = {};
-    this.started = null;
-
-    this.name = name;
     this.started = Util.microtime();
   }
 
   _createClass(Handler, [{
     key: 'time',
     value: function time(id, message) {
-      if (!enabled) return;
+      if (!enabled) return null;
 
       if (id == null) id = this.logs.length;
 
@@ -622,7 +623,7 @@ var Handler = (function () {
   }, {
     key: 'timeEnd',
     value: function timeEnd(id, message) {
-      if (!enabled) return;
+      if (!enabled) return null;
 
       if (id == null) id = this.logs.length;
 
@@ -660,7 +661,7 @@ var Handler = (function () {
 
       if (auto) enabled = true;
 
-      if (!enabled) return;
+      if (!enabled) return null;
 
       this.logs.forEach(function (log) {
         if (log.type == 'time') {

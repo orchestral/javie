@@ -11,9 +11,8 @@ let level = {
 }
 
 function dispatch (type, message) {
-  if (enabled) {
-    post(type, message)
-  }
+  if (enabled)
+    return post(type, message)
 }
 
 function post (type, message) {
@@ -22,51 +21,56 @@ function post (type, message) {
   switch (type) {
     case 'info':
       c.info(message)
-      break
+      return true
     case 'debug' && (c.debug != null):
       c.debug(message)
-      break;
+      return true
     case 'warning':
       c.warn(message)
-      break
+      return true
     case 'error' && (c.error != null):
       c.error(message)
-      break
+      return true
     case 'log':
       c.log(message)
-      break
-    default:
+      return true
+    default :
       c.log(`[${type.toUpperCase()}]`, message)
+      return true
   }
 }
 
 class Writer {
-  logs = []
+  constructor() {
+    this.logs = []
+  }
 
   dispatch(type, message) {
     let result = dispatch(type, message)
     message.unshift(type)
     this.logs.push(message)
+
+    return result
   }
 
   info() {
-    this.dispatch(level.INFO, Util.array_make(arguments))
+    return this.dispatch(level.INFO, Util.array_make(arguments))
   }
 
   debug() {
-    this.dispatch(level.DEBUG, Util.array_make(arguments))
+    return this.dispatch(level.DEBUG, Util.array_make(arguments))
   }
 
   warning() {
-    this.dispatch(level.WARNING, Util.array_make(arguments))
+    return this.dispatch(level.WARNING, Util.array_make(arguments))
   }
 
   log() {
-    this.dispatch(level.LOG, Util.array_make(arguments))
+    return this.dispatch(level.LOG, Util.array_make(arguments))
   }
 
-  post(type, mesage) {
-    this.dispatch(type, [message])
+  post(type, message) {
+    return this.dispatch(type, [message])
   }
 }
 
