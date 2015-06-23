@@ -793,7 +793,8 @@ var Handler = (function () {
       data: '',
       dataType: 'json',
       id: '',
-      object: null
+      object: null,
+      headers: {}
     };
   }
 
@@ -821,9 +822,19 @@ var Handler = (function () {
       return this;
     }
   }, {
+    key: 'addHeader',
+    value: function addHeader(key, value) {
+      var headers = this.get('headers', {});
+      headers[key] = value;
+      this.put({ headers: headers });
+
+      return this;
+    }
+  }, {
     key: 'to',
     value: function to(url, object) {
       var dataType = arguments[2] === undefined ? 'json' : arguments[2];
+      var headers = arguments[3] === undefined ? {} : arguments[3];
 
       var supported = ['POST', 'GET', 'PUT', 'DELETED'];
 
@@ -860,7 +871,8 @@ var Handler = (function () {
         object: object,
         query: query,
         type: type,
-        uri: uri
+        uri: uri,
+        headers: headers
       });
 
       var id = api(object).attr('id');
@@ -872,8 +884,6 @@ var Handler = (function () {
   }, {
     key: 'execute',
     value: function execute(data) {
-      var _this = this;
-
       var me = this;
       var name = this.get('name');
       var object = this.get('object');
@@ -886,24 +896,26 @@ var Handler = (function () {
 
       this.executed = true;
 
-      this.fireEvent('beforeSend', name, [this]);
-
       var payload = {
         type: this.get('type'),
         dataType: this.get('dataType'),
         url: this.get('uri'),
         data: data,
+        headers: this.get('headers', {}),
+        beforeSend: function beforeSend(xhr) {
+          me.fireEvent('beforeSend', name, [me, xhr]);
+        },
         complete: function complete(xhr) {
           data = json_parse(xhr.responseText);
           status = xhr.status;
-          _this.response = xhr;
+          me.response = xhr;
 
           if (!_.isUndefined(data) && data.hasOwnProperty('error')) {
-            _this.fireEvent('onError', name, [data.errors, status, _this]);
+            me.fireEvent('onError', name, [data.errors, status, me]);
             data.errors = null;
           }
 
-          _this.fireEvent('onComplete', name, [data, status, _this]);
+          me.fireEvent('onComplete', name, [data, status, me]);
         }
       };
 

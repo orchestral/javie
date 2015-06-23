@@ -30,7 +30,8 @@ class Handler {
       data: '',
       dataType: 'json',
       id: '',
-      object: null
+      object: null,
+      headers: {}
     }
   }
 
@@ -54,7 +55,15 @@ class Handler {
     return this
   }
 
-  to(url, object, dataType = 'json') {
+  addHeader(key, value) {
+    let headers = this.get('headers', {})
+    headers[key] = value
+    this.put({ headers: headers })
+
+    return this
+  }
+
+  to(url, object, dataType = 'json', headers = {}) {
     let supported = ['POST', 'GET', 'PUT', 'DELETED']
 
     if (_.isUndefined(url))
@@ -93,7 +102,8 @@ class Handler {
       object: object,
       query: query,
       type: type,
-      uri: uri
+      uri: uri,
+      headers: headers
     })
 
     let id = api(object).attr('id')
@@ -112,30 +122,31 @@ class Handler {
 
     if (_.isObject(data)) {
       data =`${api(object).serialize()}&${query}`
-      if (data == '?&')
-        data = ''
+      if (data == '?&') data = ''
     }
 
     this.executed = true
-
-    this.fireEvent('beforeSend', name, [this])
 
     let payload = {
       type: this.get('type'),
       dataType: this.get('dataType'),
       url: this.get('uri'),
       data: data,
-      complete: (xhr) => {
+      headers: this.get('headers', {}),
+      beforeSend: function (xhr) {
+        me.fireEvent('beforeSend', name, [me, xhr])
+      },
+      complete: function (xhr) {
         data = json_parse(xhr.responseText)
         status = xhr.status
-        this.response = xhr
+        me.response = xhr
 
         if (!_.isUndefined(data) && data.hasOwnProperty('error')) {
-          this.fireEvent('onError', name, [data.errors, status, this])
+          me.fireEvent('onError', name, [data.errors, status, me])
           data.errors = null
         }
 
-        this.fireEvent('onComplete', name, [data, status, this])
+        me.fireEvent('onComplete', name, [data, status, me])
       }
     }
 
