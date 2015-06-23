@@ -6,7 +6,7 @@
     "Mior Muhammad Zaki <crynobone@gmail.com>"
   ],
   "description": "Javie Client-side JavaScript Library",
-  "main": ["dist/javie.js", "dist/javie.min.js"],
+  "main": ["dist/javie.js", "dist/javie.js.map", "dist/javie.min.js"],
   "license": "MIT",
   "ignore": [
     "**/.*",
