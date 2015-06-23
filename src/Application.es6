@@ -106,7 +106,7 @@ class Application {
   }
 
   singleton(name, instance) {
-    this.instance[name] = new Container(name, instance, true)
+    this.instances[name] = new Container(name, instance, true)
 
     return this
   }
