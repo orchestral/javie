@@ -145,10 +145,6 @@ var Application = (function () {
     _classCallCheck(this, Application);
 
     this.config = {};
-    this.environment = 'production';
-    this.instances = {};
-
-    this.config = {};
     this.environment = environment;
     this.instances = {};
   }
