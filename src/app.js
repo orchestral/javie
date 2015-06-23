@@ -14,14 +14,14 @@ app.singleton('event', () => new Events())
 app.singleton('log', () => Log)
 app.singleton('log.writer', () => new Log())
 
-app.bind('profiler', (name) => {
+app.bind('profiler', (name = null) => {
   if (name != null)
     return Profiler(name)
 
   return Profiler
 })
 
-app.bind('request', (name) => {
+app.bind('request', (name = null) => {
   if (name != null)
     return Request(name)
 
