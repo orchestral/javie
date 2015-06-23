@@ -107,7 +107,7 @@ class EventDispatcher
 
     unless _.isString(id)
       throw new Error "Event ID [#{id}] is not provided"
-    unless _.isFunction(callback)
+    unless _.isFunction(ref)
       throw new Error 'Callback is not a function'
     unless events[id]?
       throw new Error "Event ID [#{id}] is not available"

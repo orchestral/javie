@@ -144,7 +144,7 @@
       if (!_.isString(id)) {
         throw new Error("Event ID [" + id + "] is not provided");
       }
-      if (!_.isFunction(callback)) {
+      if (!_.isFunction(ref)) {
         throw new Error('Callback is not a function');
       }
       if (events[id] == null) {
