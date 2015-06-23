@@ -99,11 +99,6 @@ var Container = (function () {
 
     _classCallCheck(this, Container);
 
-    this.name = null;
-    this.instance = null;
-    this.shared = false;
-    this.resolved = false;
-
     this.name = name;
     this.instance = instance;
     this.shared = shared;
@@ -145,10 +140,16 @@ var Container = (function () {
 
 var Application = (function () {
   function Application() {
+    var environment = arguments[0] === undefined ? 'production' : arguments[0];
+
     _classCallCheck(this, Application);
 
     this.config = {};
     this.environment = 'production';
+    this.instances = {};
+
+    this.config = {};
+    this.environment = environment;
     this.instances = {};
   }
 
@@ -290,6 +291,29 @@ var _vendorUnderscore2 = _interopRequireDefault(_vendorUnderscore);
 var dispatcher = null;
 var events = {};
 
+var Payload = (function () {
+  function Payload(id, callback) {
+    _classCallCheck(this, Payload);
+
+    this.id = id;
+    this.callback = callback;
+  }
+
+  _createClass(Payload, [{
+    key: "getId",
+    value: function getId() {
+      return this.id;
+    }
+  }, {
+    key: "getCallback",
+    value: function getCallback() {
+      return this.callback;
+    }
+  }]);
+
+  return Payload;
+})();
+
 var Dispatcher = (function () {
   function Dispatcher() {
     _classCallCheck(this, Dispatcher);
@@ -309,10 +333,7 @@ var Dispatcher = (function () {
     value: function listen(id, callback) {
       if (!_vendorUnderscore2["default"].isFunction(callback)) throw new Error("Callback is not a function.");
 
-      var response = {
-        id: id,
-        callback: callback
-      };
+      var response = new Payload(id, callback);
 
       if (!_vendorUnderscore2["default"].isArray(events[id])) events[id] = [];
 
@@ -357,11 +378,12 @@ var Dispatcher = (function () {
     key: "forget",
     value: function forget(handler) {
       var me = this;
-      var id = handler.id;
-      var ref = handler.callback;
 
-      if (!_vendorUnderscore2["default"].isString(id)) throw new Error("Event ID [" + id + "] is not provided.");
-      if (!_vendorUnderscore2["default"].isFunction(ref)) throw new Error("Callback is not a function.");
+      if (!handler instanceof Payload) throw new Error("Invalid payload for Event ID [" + id + "]");
+
+      var id = handler.getId();
+      var ref = handler.getCallback();
+
       if (!_vendorUnderscore2["default"].isArray(events[id])) throw new Error("Event ID [" + id + "] is not available.");
 
       _vendorUnderscore2["default"].each(events[id], function (callback, key) {

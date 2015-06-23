@@ -3,11 +3,6 @@ import * as Util from './helpers'
 let _ = require('./vendor/underscore')
 
 class Container {
-  name = null
-  instance = null
-  shared = false
-  resolved = false
-
   constructor(name, instance, shared = false, resolved = false) {
     this.name = name
     this.instance = instance
@@ -45,6 +40,12 @@ class Application {
   config = {}
   environment = 'production'
   instances = {}
+
+  constructor(environment = 'production') {
+    this.config = {}
+    this.environment = environment
+    this.instances = {}
+  }
 
   detectEnvironment(environment) {
     if (_.isFunction(environment))
