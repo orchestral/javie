@@ -34,7 +34,7 @@ function post (type, message) {
     case 'log':
       c.log(message)
       return true
-    default :
+    default:
       c.log(`[${type.toUpperCase()}]`, message)
       return true
   }

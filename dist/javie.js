@@ -48,7 +48,10 @@ app.singleton('event', function () {
   return new _modulesEventsEventsEs62['default']();
 });
 
-app.bind('log', function () {
+app.singleton('log', function () {
+  return _modulesLogLogEs62['default'];
+});
+app.singleton('log.writer', function () {
   return new _modulesLogLogEs62['default']();
 });
 

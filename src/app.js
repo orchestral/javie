@@ -11,7 +11,8 @@ app.singleton('underscore', _)
 
 app.singleton('event', () => new Events())
 
-app.bind('log', () => new Log())
+app.singleton('log', () => Log)
+app.singleton('log.writer', () => new Log())
 
 app.bind('profiler', (name) => {
   if (name != null)
