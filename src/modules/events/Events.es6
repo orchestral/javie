@@ -2,6 +2,21 @@ import _ from '../../vendor/underscore'
 let dispatcher = null
 let events = {}
 
+class Payload {
+  constructor(id, callback) {
+    this.id = id
+    this.callback = callback
+  }
+
+  getId() {
+    return this.id
+  }
+
+  getCallback() {
+    return this.callback
+  }
+}
+
 class Dispatcher {
   clone(id) {
     return clonable = {
@@ -13,10 +28,7 @@ class Dispatcher {
     if (!_.isFunction(callback))
       throw new Error("Callback is not a function.")
 
-    let response = {
-      id: id,
-      callback: callback
-    }
+    let response = new Payload(id, callback)
 
     if (!_.isArray(events[id]))
       events[id] = []
@@ -59,13 +71,13 @@ class Dispatcher {
 
   forget(handler) {
     let me = this
-    let id = handler.id
-    let ref = handler.callback
 
-    if (!_.isString(id))
-      throw new Error(`Event ID [${id}] is not provided.`)
-    if (!_.isFunction(ref))
-      throw new Error(`Callback is not a function.`)
+    if (! handler instanceof Payload)
+      throw new Error(`Invalid payload for Event ID [${id}]`)
+
+    let id = handler.getId()
+    let ref = handler.getCallback()
+
     if (!_.isArray(events[id]))
       throw new Error(`Event ID [${id}] is not available.`)
 
