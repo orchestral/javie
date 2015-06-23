@@ -3,16 +3,17 @@ import * as Util from '../../helpers'
 let profilers = {}
 let enabled = false
 
-function schema (id = '', type = '', start = null) {
-  start = start != null ? start : Util.microtime()
+class Schema {
+  constructor(id, type, start = null) {
+    if (start == null)
+      start = Util.microtime()
 
-  return {
-    id: id,
-    type: type,
-    start: start,
-    end: null,
-    total: null,
-    message: ''
+    this.id = id
+    this.type = type
+    this.start = start
+    this.end = null
+    this.total = null
+    this.message = ''
   }
 }
 
@@ -31,7 +32,7 @@ class Handler {
     if (id == null)
       id = this.logs.length
 
-    let log = schema(id, 'time')
+    let log = new Schema(id, 'time')
     log.message = message.toString()
 
     let key = this.pair[`time${id}`]
@@ -62,7 +63,7 @@ class Handler {
       console.timeEnd(id)
       log = this.logs[key]
     } else {
-      log = schema(id, 'time', this.started)
+      log = new Schema(id, 'time', this.started)
       if (typeof message != 'undefined')
         log.message = message
 

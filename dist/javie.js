@@ -595,22 +595,20 @@ var Util = _interopRequireWildcard(_helpers);
 var profilers = {};
 var enabled = false;
 
-function schema() {
-  var id = arguments[0] === undefined ? '' : arguments[0];
-  var type = arguments[1] === undefined ? '' : arguments[1];
+var Schema = function Schema(id, type) {
   var start = arguments[2] === undefined ? null : arguments[2];
 
-  start = start != null ? start : Util.microtime();
+  _classCallCheck(this, Schema);
 
-  return {
-    id: id,
-    type: type,
-    start: start,
-    end: null,
-    total: null,
-    message: ''
-  };
-}
+  if (start == null) start = Util.microtime();
+
+  this.id = id;
+  this.type = type;
+  this.start = start;
+  this.end = null;
+  this.total = null;
+  this.message = '';
+};
 
 var Handler = (function () {
   function Handler(name) {
@@ -629,7 +627,7 @@ var Handler = (function () {
 
       if (id == null) id = this.logs.length;
 
-      var log = schema(id, 'time');
+      var log = new Schema(id, 'time');
       log.message = message.toString();
 
       var key = this.pair['time' + id];
@@ -659,7 +657,7 @@ var Handler = (function () {
         console.timeEnd(id);
         log = this.logs[key];
       } else {
-        log = schema(id, 'time', this.started);
+        log = new Schema(id, 'time', this.started);
         if (typeof message != 'undefined') log.message = message;
 
         this.logs.push(log);
