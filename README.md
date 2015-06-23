@@ -32,7 +32,7 @@ Javie.run(function initiateAllEnv () {
 
 ## Event Dispatcher
 
-`Javie.EventDispatcher` is a publisher/subscriber object that you can use in your app, in a way it's similar to `jQuery.bind` and `jQuery.trigger` except that the event is not attach to any DOM element.
+`Events` is a publisher/subscriber object that you can use in your app, in a way it's similar to `jQuery.bind` and `jQuery.trigger` except that the event is not attach to any DOM element.
 
 ```javascript
 var ev = Javie.make('event')
@@ -54,7 +54,7 @@ ev.forget(say)
 ev.fire('simon.say', ['does not output anything'])
 ```
 
-In Javie, we use `Javie.EventDispatcher` on top of `Javie.Request` to allow you to add attach event to any `Javie.Request` call. Let say you want to get the amount of time it took for each request.
+In Javie, we use `Events` on top of `Request` to allow you to add attach event to any `Request` call. Let say you want to get the amount of time it took for each request.
 
 ```javascript
 var ev, p
@@ -155,7 +155,7 @@ writer.log('It a log')
 
 ## Request
 
-`Javie.Request` is a quick way to use RESTful request on top of `jQuery.ajax` or `Zepto.ajax`. You can choose whether to use `GET`, `POST`, `PUT` or `DELETE` and the object will manage everything else.
+`Request` is a quick way to use RESTful request on top of `jQuery.ajax` or `Zepto.ajax`. You can choose whether to use `GET`, `POST`, `PUT` or `DELETE` and the object will manage everything else.
 
 ```javascript
 jQuery('#register-form').bind('submit', function onRegisterFormSubmit (e) {
@@ -166,7 +166,7 @@ jQuery('#register-form').bind('submit', function onRegisterFormSubmit (e) {
 })
 ```
 
-Using `Javie.EventDispatcher`, you can attach as many event as you wish to either global or individual name that you identify when you run `Javie.Request('register')` (in this case the name would be `register`).
+Using `Events`, you can attach as many event as you wish to either global or individual name that you identify when you run `Request('register')` (in this case the name would be `register`).
 
 ```javascript
 var ev = new Javie.make('event')
