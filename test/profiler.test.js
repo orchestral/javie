@@ -2,7 +2,7 @@
 
 global._ = require('underscore')
 
-describe('Javie.Profiler', function () {
+describe('Profiler', function () {
     var Profiler, stub;
 
     Profiler = require(__dirname+'/../src/modules/profiler/Profiler.es6')
