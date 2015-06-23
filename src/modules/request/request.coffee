@@ -121,7 +121,7 @@ class Request
         queries = uri.split '?'
 
         if queries.length > 1
-          url = queries[0]
+          uri = queries[0]
           @put { 'query': queries[1] }
 
       uri = uri.replace ':baseUrl', @get('baseUrl', '')

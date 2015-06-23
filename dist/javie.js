@@ -833,7 +833,7 @@
         if (type !== 'GET') {
           queries = uri.split('?');
           if (queries.length > 1) {
-            url = queries[0];
+            uri = queries[0];
             this.put({
               'query': queries[1]
             });
