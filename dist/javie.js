@@ -911,11 +911,11 @@ var Handler = (function () {
           me.response = xhr;
 
           if (!_.isUndefined(data) && data.hasOwnProperty('error')) {
-            me.fireEvent('onError', name, [data.errors, status, me]);
+            me.fireEvent('onError', name, [data.errors, status, me, xhr]);
             data.errors = null;
           }
 
-          me.fireEvent('onComplete', name, [data, status, me]);
+          me.fireEvent('onComplete', name, [data, status, me, xhr]);
         }
       };
 
