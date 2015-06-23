@@ -37,10 +37,6 @@ class Container {
 }
 
 class Application {
-  config = {}
-  environment = 'production'
-  instances = {}
-
   constructor(environment = 'production') {
     this.config = {}
     this.environment = environment
