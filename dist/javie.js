@@ -5,7 +5,7 @@
  *
  * @package Javie
  * @require underscore, console, jQuery/Zepto
- * @version 2.0.1
+ * @version 2.0.2
  * @author  Mior Muhammad Zaki <https://github.com/crynobone>
  * @license MIT License
  * ========================================================================
@@ -885,7 +885,7 @@ var Handler = (function () {
       var object = this.get('object');
       var query = this.get('query');
 
-      if (_.isObject(data)) {
+      if (!_.isObject(data)) {
         data = api(object).serialize() + '&' + query;
         if (data == '?&') data = '';
       }
