@@ -161,7 +161,11 @@ class Handler {
   fireEvent(type, name, args) {
     dispatcher.fire(`Request.${type}`, args)
     dispatcher.fire(`Request.${type}: ${name}`, args)
-    this.config[type].apply(this, args)
+
+    let callback = this.config[type]
+
+    if (_.isFunction(callback))
+      callback.apply(this, args)
   }
 }
 
