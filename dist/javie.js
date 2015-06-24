@@ -314,7 +314,7 @@ var Dispatcher = (function () {
   _createClass(Dispatcher, [{
     key: "clone",
     value: function clone(id) {
-      return clonable = {
+      return {
         to: function to(_to) {
           return events[_to] = _vendorUnderscore2["default"].clone(events[id]);
         }
