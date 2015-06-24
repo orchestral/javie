@@ -15,17 +15,11 @@ app.singleton('log', () => Log)
 app.singleton('log.writer', () => new Log())
 
 app.bind('profiler', (name = null) => {
-  if (name != null)
-    return Profiler(name)
-
-  return Profiler
+  return name != null ? new Profiler(name) : Profiler
 })
 
 app.bind('request', (name = null) => {
-  if (name != null)
-    return Request(name)
-
-  return Request
+  return name != null ? new Request(name) : Request
 })
 
 window.Javie = app

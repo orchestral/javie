@@ -5,7 +5,7 @@
  *
  * @package Javie
  * @require underscore, console, jQuery/Zepto
- * @version 2.0.x-dev
+ * @version 2.0.1
  * @author  Mior Muhammad Zaki <https://github.com/crynobone>
  * @license MIT License
  * ========================================================================
@@ -58,17 +58,13 @@ app.singleton('log.writer', function () {
 app.bind('profiler', function () {
   var name = arguments[0] === undefined ? null : arguments[0];
 
-  if (name != null) return (0, _modulesProfilerProfilerEs62['default'])(name);
-
-  return _modulesProfilerProfilerEs62['default'];
+  return name != null ? new _modulesProfilerProfilerEs62['default'](name) : _modulesProfilerProfilerEs62['default'];
 });
 
 app.bind('request', function () {
   var name = arguments[0] === undefined ? null : arguments[0];
 
-  if (name != null) return (0, _modulesRequestRequestEs62['default'])(name);
-
-  return _modulesRequestRequestEs62['default'];
+  return name != null ? new _modulesRequestRequestEs62['default'](name) : _modulesRequestRequestEs62['default'];
 });
 
 window.Javie = app;
