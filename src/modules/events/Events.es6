@@ -19,7 +19,7 @@ class Payload {
 
 class Dispatcher {
   clone(id) {
-    return clonable = {
+    return {
       to: to => events[to] = _.clone(events[id])
     }
   }
