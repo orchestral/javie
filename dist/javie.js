@@ -790,7 +790,10 @@ var Handler = (function () {
       dataType: 'json',
       id: '',
       object: null,
-      headers: {}
+      headers: {},
+      beforeSend: function beforeSend() {},
+      onComplete: function onComplete() {},
+      onError: function onError() {}
     };
   }
 

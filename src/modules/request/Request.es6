@@ -31,7 +31,10 @@ class Handler {
       dataType: 'json',
       id: '',
       object: null,
-      headers: {}
+      headers: {},
+      beforeSend: () => {},
+      onComplete: () => {},
+      onError: () => {}
     }
   }
 
