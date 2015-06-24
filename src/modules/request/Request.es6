@@ -120,7 +120,7 @@ class Handler {
     let object = this.get('object')
     let query = this.get('query')
 
-    if (_.isObject(data)) {
+    if (!_.isObject(data)) {
       data =`${api(object).serialize()}&${query}`
       if (data == '?&') data = ''
     }
