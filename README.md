@@ -1,6 +1,8 @@
 Javie
 =====
 
+[![Join the chat at https://gitter.im/orchestral/javie](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orchestral/javie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Javie Client-side JavaScript Library is simple toolkit written for Client-side JavaScript. The toolkit can be use separately and only requires file that is marked in the documentation. All the object use object combined with factory pattern to make a reusable global instance or multi-instance (depend which is better).
 
 ## Javie
