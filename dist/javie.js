@@ -829,6 +829,14 @@ var _helpers = require('../../helpers');
 
 var Util = _interopRequireWildcard(_helpers);
 
+var _underscore = require('../../vendor/underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _jquery = require('../../vendor/jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -837,13 +845,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var dispatcher = _Events2.default.make();
 var requests = {};
-var _ = require('../../vendor/underscore');
-var api = require('../../vendor/jquery');
 
 function json_parse(data) {
-  if (_.isString(data)) {
+  if (_underscore2.default.isString(data)) {
     try {
-      data = api.parseJSON(data);
+      data = _jquery2.default.parseJSON(data);
     } catch (e) {
       data = null;
     }
@@ -905,7 +911,7 @@ var Handler = (function () {
 
       var supported = ['POST', 'GET', 'PUT', 'DELETED'];
 
-      if (_.isUndefined(url)) throw new Error("Missing required URL parameter.");
+      if (_underscore2.default.isUndefined(url)) throw new Error("Missing required URL parameter.");
 
       if (object == null) object = window.document;
 
@@ -917,7 +923,7 @@ var Handler = (function () {
       if (segment.length == 1) {
         uri = segment[0];
       } else {
-        if (_.indexOf(supported, segment[0]) > -1) type = segment[0];
+        if (_underscore2.default.indexOf(supported, segment[0]) > -1) type = segment[0];
 
         uri = segment[1];
       }
@@ -942,7 +948,7 @@ var Handler = (function () {
         headers: headers
       });
 
-      var id = api(object).attr('id');
+      var id = (0, _jquery2.default)(object).attr('id');
 
       if (typeof id != 'undefined') this.config.put({ id: '#' + id });
 
@@ -956,8 +962,8 @@ var Handler = (function () {
       var object = this.config.get('object');
       var query = this.config.get('query');
 
-      if (!_.isObject(data)) {
-        data = api(object).serialize() + '&' + query;
+      if (!_underscore2.default.isObject(data)) {
+        data = (0, _jquery2.default)(object).serialize() + '&' + query;
         if (data == '?&') data = '';
       }
 
@@ -977,7 +983,7 @@ var Handler = (function () {
           status = xhr.status;
           me.response = xhr;
 
-          if (!_.isUndefined(data) && data.hasOwnProperty('error')) {
+          if (!_underscore2.default.isUndefined(data) && data.hasOwnProperty('error')) {
             me.fireEvent('onError', name, [data.errors, status, me, xhr]);
             data.errors = null;
           }
@@ -986,7 +992,7 @@ var Handler = (function () {
         }
       };
 
-      api.ajax(payload);
+      _jquery2.default.ajax(payload);
 
       return this;
     }
@@ -998,7 +1004,7 @@ var Handler = (function () {
 
       var callback = this.config[type];
 
-      if (_.isFunction(callback)) callback.apply(this, args);
+      if (_underscore2.default.isFunction(callback)) callback.apply(this, args);
     }
   }]);
 
@@ -1031,7 +1037,7 @@ var Request = (function () {
     value: function get(key) {
       var defaults = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-      if (!_.isUndefined(RequestAttributes[key])) return RequestAttributes[key];
+      if (!_underscore2.default.isUndefined(RequestAttributes[key])) return RequestAttributes[key];
 
       return defaults;
     }
@@ -1040,21 +1046,21 @@ var Request = (function () {
     value: function put(key, value) {
       var config = key;
 
-      if (!_.isObject(key)) {
+      if (!_underscore2.default.isObject(key)) {
         config = {};
         config[key] = value;
       }
 
-      RequestAttributes = _.defaults(config, RequestAttributes);
+      RequestAttributes = _underscore2.default.defaults(config, RequestAttributes);
     }
   }, {
     key: 'find',
     value: function find(name) {
       var request = null;
 
-      if (_.isUndefined(requests[name])) {
+      if (_underscore2.default.isUndefined(requests[name])) {
         request = new Handler();
-        request.put(_.defaults(request.config.all(), RequestAttributes));
+        request.put(_underscore2.default.defaults(request.config.all(), RequestAttributes));
         request.put({ name: name });
 
         return requests[name] = request;
@@ -1064,7 +1070,7 @@ var Request = (function () {
 
       if (!request.executed) return request;
 
-      var key = _.uniqueId(name + '_');
+      var key = _underscore2.default.uniqueId(name + '_');
       var child = new Handler();
 
       dispatcher.clone('Request.onError: ' + name).to('Request.onError: ' + name);

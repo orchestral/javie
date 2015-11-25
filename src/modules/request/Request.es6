@@ -1,11 +1,11 @@
 import Events from '../events/Events.es6'
 import configuration from '../config/Config.es6'
 import * as Util from '../../helpers'
+import _ from '../../vendor/underscore'
+import api from '../../vendor/jquery'
 
 let dispatcher = Events.make()
 let requests = {}
-let _ = require('../../vendor/underscore')
-let api = require('../../vendor/jquery')
 
 function json_parse(data) {
   if (_.isString(data)) {
