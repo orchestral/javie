@@ -171,14 +171,14 @@ class Handler {
 
 class Request {
   constructor(name) {
-    return Request.make(name)
-  }
+    this.config = {
+      baseUrl: null,
+      onError: (data, status) => {},
+      beforeSend: (data, status) => {},
+      onComplete: (data, status) => {}
+    }
 
-  static config = {
-    baseUrl: null,
-    onError: (data, status) => {},
-    beforeSend: (data, status) => {},
-    onComplete: (data, status) => {}
+    return Request.make(name)
   }
 
   static make(name = 'default') {

@@ -49,8 +49,8 @@ class Dispatcher {
     if (id == null)
       throw new Error(`Event ID [${id}] is not available.`)
 
-    let first = events[id].slice(0, 1)
-    let responses = this.dispatch(first, options)
+    let event = events[id].slice(0, 1)
+    let responses = this.dispatch(event, options)
 
     return responses.shift()
   }
