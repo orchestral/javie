@@ -11,8 +11,7 @@
     "**/.*",
     "node_modules",
     "components",
-    "test",
-    "tests"
+    "test"
   ],
   "dependencies": {
     "jquery": ">=1.9.0",

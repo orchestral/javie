@@ -1,9 +1,6 @@
-'use strict'
-
-global._ = require('underscore')
+import Log from '../src/modules/log/Log.es6'
 
 describe('Log', function () {
-    var Log = require(__dirname+'/../src/modules/log/Log.es6')
     var writer = new Log
 
     it('should return status true when logger is enabled', function (done) {

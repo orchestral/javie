@@ -949,6 +949,7 @@ var Request = (function () {
       beforeSend: function beforeSend(data, status) {},
       onComplete: function onComplete(data, status) {}
     };
+
     return Request.make(name);
   }
 

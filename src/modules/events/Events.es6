@@ -1,4 +1,5 @@
 import _ from '../../vendor/underscore'
+
 let dispatcher = null
 let events = {}
 

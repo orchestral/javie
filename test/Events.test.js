@@ -1,21 +1,18 @@
-'use strict'
-
-global._ = require('underscore')
+import Events from '../src/modules/events/Events.es6'
 
 describe('Events', function () {
-    var Events = require(__dirname+'/../src/modules/events/Events.es6')
-    var events = new Events
+    var dispatcher = new Events
 
-    events.listen('javie.done', function () {
+    dispatcher.listen('javie.done', function () {
         return 'javie.done-emitted'
     })
 
-    events.listen('javie.done', function () {
+    dispatcher.listen('javie.done', function () {
         return 'javie.done-again'
     })
 
     it('should be able to fire `javie.done`', function (done) {
-        var response = events.fire('javie.done')
+        var response = dispatcher.fire('javie.done')
 
         if (response.length === 2) {
             done()
@@ -23,7 +20,7 @@ describe('Events', function () {
     })
 
     it('should be able to run only first event `javie.done`', function (done) {
-        var response = events.first('javie.done')
+        var response = dispatcher.first('javie.done')
 
         if (response === 'javie.done-emitted') {
             done()
@@ -31,8 +28,8 @@ describe('Events', function () {
     })
 
     it('should be able to flush `javie.done`', function (done) {
-        events.flush('javie.done')
-        if (events.fire('javie.done') === null) {
+        dispatcher.flush('javie.done')
+        if (dispatcher.fire('javie.done') === null) {
             done()
         }
     })

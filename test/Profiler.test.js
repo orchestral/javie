@@ -1,12 +1,7 @@
-'use strict'
-
-global._ = require('underscore')
+import Profiler from '../src/modules/profiler/Profiler.es6'
 
 describe('Profiler', function () {
-    var Profiler, stub;
-
-    Profiler = require(__dirname+'/../src/modules/profiler/Profiler.es6')
-    stub = Profiler.make()
+    var stub = Profiler.make()
 
     it('should return status true when Profiler is enabled', function (done) {
         Profiler.enable()
