@@ -273,6 +273,10 @@ function microtime() {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _underscore = require('../../vendor/underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
@@ -323,6 +327,8 @@ var Configuration = (function () {
 
   return Configuration;
 })();
+
+exports.default = Configuration;
 
 },{"../../vendor/underscore":10}],5:[function(require,module,exports){
 "use strict";

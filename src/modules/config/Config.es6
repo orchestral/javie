@@ -28,3 +28,5 @@ class Configuration {
     return this.attributes
   }
 }
+
+export default Configuration
