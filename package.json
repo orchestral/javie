@@ -1,4 +1,22 @@
 {
+  "name": "javie",
+  "description": "Javie Client-side JavaScript Library",
+  "version": "2.1.0",
+  "main": "dist/javie.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orchestral/javie.git"
+  },
+  "keywords": ["javie"],
+  "author": "Mior Muhammad Zaki <crynobone@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/orchestral/javie/issues"
+  },
+  "homepage": "https://github.com/orchestral/javie#readme",
   "dependencies": {
     "babel-polyfill": "^6.2.0",
     "babel-require": "^1.0.1",
