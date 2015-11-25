@@ -59,16 +59,15 @@ ev.fire('simon.say', ['does not output anything'])
 In Javie, we use `Events` on top of `Request` to allow you to add attach event to any `Request` call. Let say you want to get the amount of time it took for each request.
 
 ```javascript
-var ev, p
+var p
 
-ev = Javie.make('event')
-p  = Javie.make('profiler')
+p = Javie.make('profiler')
 
-ev.listen('Request.beforeSend', function (self) {
+Javie.on('Request.beforeSend', function (self) {
   p.time(self.get('name') + '.request', 'Time taken for the request')
 })
 
-ev.listen('Request.onComplete', function (data, status, self) {
+Javie.on('Request.onComplete', function (data, status, self) {
 	p.timeEnd(self.get('name') + '.request')
 })
 ```
@@ -171,17 +170,15 @@ jQuery('#register-form').bind('submit', function onRegisterFormSubmit (e) {
 Using `Events`, you can attach as many event as you wish to either global or individual name that you identify when you run `Request('register')` (in this case the name would be `register`).
 
 ```javascript
-var ev = new Javie.make('event')
-
-ev.listen('Request.beforeSend: register', function beforeSend (self) {
+Javie.on('Request.beforeSend: register', function beforeSend (self) {
   // this will be run before Ajax request is send to server.
 })
 
-ev.listen('Request.onError: register', function onValidationError (data, status, self) {
+Javie.on('Request.onError: register', function onValidationError (data, status, self) {
   // this will be run if server return json containing { 'errors' : [ ] }
 })
 
-ev.listen('Request.onComplete: register', function (data, status, self) {
+Javie.on('Request.onComplete: register', function (data, status, self) {
   // this will be run once the request is completed.
 })
 ```
