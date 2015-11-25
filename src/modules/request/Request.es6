@@ -199,7 +199,7 @@ class Request {
 
     if (_.isUndefined(requests[name])) {
       request = new Handler()
-      request.config = _.defaults(request.config, RequestAttributes)
+      request.put(_.defaults(request.config.all(), RequestAttributes))
       request.put({ name: name })
 
       return requests[name] = request

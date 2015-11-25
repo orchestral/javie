@@ -24,11 +24,19 @@ var _helpers = require('./helpers');
 
 var Util = _interopRequireWildcard(_helpers);
 
+var _Config = require('./modules/config/Config.es6');
+
+var _Config2 = _interopRequireDefault(_Config);
+
+var _underscore = require('./vendor/underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _ = require('./vendor/underscore');
 
 var Container = (function () {
   function Container(name, instance) {
@@ -52,7 +60,7 @@ var Container = (function () {
 
       var resolved = this.instance;
 
-      if (_.isFunction(resolved)) resolved = resolved.apply(this, options);
+      if (_underscore2.default.isFunction(resolved)) resolved = resolved.apply(this, options);
 
       if (this.isShared()) {
         this.instance = resolved;
@@ -82,7 +90,7 @@ var Application = (function () {
 
     _classCallCheck(this, Application);
 
-    this.config = {};
+    this.config = new _Config2.default();
     this.environment = environment;
     this.instances = {};
   }
@@ -90,7 +98,7 @@ var Application = (function () {
   _createClass(Application, [{
     key: 'detectEnvironment',
     value: function detectEnvironment(environment) {
-      if (_.isFunction(environment)) environment = environment.apply(this);
+      if (_underscore2.default.isFunction(environment)) environment = environment.apply(this);
 
       return this.environment = environment;
     }
@@ -104,21 +112,12 @@ var Application = (function () {
     value: function get(key) {
       var defaults = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-      if (typeof this.config[key] !== 'undefined') return this.config[key];
-
-      return defaults;
+      return this.config.get(key, defaults);
     }
   }, {
     key: 'put',
     value: function put(key, value) {
-      var config = key;
-
-      if (!_.isObject(config)) {
-        config = {};
-        config[key] = value;
-      }
-
-      this.config = _.defaults(config, this.config);
+      this.config.put(key, value);
 
       return this;
     }
@@ -179,7 +178,7 @@ var Application = (function () {
   }, {
     key: 'run',
     value: function run(callback) {
-      if (_.isFunction(callback)) return callback.call(this);
+      if (_underscore2.default.isFunction(callback)) return callback.call(this);
     }
   }]);
 
@@ -188,7 +187,7 @@ var Application = (function () {
 
 exports.default = Application;
 
-},{"./helpers":3,"./vendor/underscore":10}],2:[function(require,module,exports){
+},{"./helpers":3,"./modules/config/Config.es6":4,"./vendor/underscore":10}],2:[function(require,module,exports){
 'use strict';
 
 var _underscore = require('./vendor/underscore');
@@ -198,6 +197,10 @@ var _underscore2 = _interopRequireDefault(_underscore);
 var _Application = require('./Application.es6');
 
 var _Application2 = _interopRequireDefault(_Application);
+
+var _Config = require('./modules/config/Config.es6');
+
+var _Config2 = _interopRequireDefault(_Config);
 
 var _Events = require('./modules/events/Events.es6');
 
@@ -232,6 +235,12 @@ app.singleton('log.writer', function () {
   return new _Log2.default();
 });
 
+app.bind('config', function () {
+  var attributes = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  return new _Config2.default(attributes);
+});
+
 app.bind('profiler', function () {
   var name = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
@@ -246,7 +255,7 @@ app.bind('request', function () {
 
 window.Javie = app;
 
-},{"./Application.es6":1,"./modules/events/Events.es6":5,"./modules/log/Log.es6":6,"./modules/profiler/Profiler.es6":7,"./modules/request/Request.es6":8,"./vendor/underscore":10}],3:[function(require,module,exports){
+},{"./Application.es6":1,"./modules/config/Config.es6":4,"./modules/events/Events.es6":5,"./modules/log/Log.es6":6,"./modules/profiler/Profiler.es6":7,"./modules/request/Request.es6":8,"./vendor/underscore":10}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1045,7 +1054,7 @@ var Request = (function () {
 
       if (_.isUndefined(requests[name])) {
         request = new Handler();
-        request.config = _.defaults(request.config, RequestAttributes);
+        request.put(_.defaults(request.config.all(), RequestAttributes));
         request.put({ name: name });
 
         return requests[name] = request;

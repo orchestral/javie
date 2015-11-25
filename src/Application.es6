@@ -1,6 +1,6 @@
 import * as Util from './helpers'
-
-let _ = require('./vendor/underscore')
+import Configuration from './modules/config/Config.es6'
+import _ from './vendor/underscore'
 
 class Container {
   constructor(name, instance, shared = false, resolved = false) {
@@ -38,7 +38,7 @@ class Container {
 
 class Application {
   constructor(environment = 'production') {
-    this.config = {}
+    this.config = new Configuration()
     this.environment = environment
     this.instances = {}
   }
@@ -55,21 +55,11 @@ class Application {
   }
 
   get(key, defaults = null) {
-    if (typeof this.config[key] !== 'undefined')
-      return this.config[key]
-
-    return defaults
+    return this.config.get(key, defaults)
   }
 
   put(key, value) {
-    let config = key
-
-    if (! _.isObject(config)) {
-      config = {}
-      config[key] = value
-    }
-
-    this.config = _.defaults(config, this.config)
+    this.config.put(key, value)
 
     return this
   }
