@@ -1,4 +1,5 @@
 import Events from '../events/Events.es6'
+import configuration from '../config/Config.es6'
 import * as Util from '../../helpers'
 
 let dispatcher = Events.make()
@@ -22,7 +23,7 @@ class Handler {
   constructor() {
     this.executed = false
     this.response = null
-    this.config = {
+    this.config = new Configuration({
       name: '',
       type: 'GET',
       uri: '',
@@ -35,33 +36,23 @@ class Handler {
       beforeSend: () => {},
       onComplete: () => {},
       onError: () => {}
-    }
+    })
   }
 
   get(key, defaults = null) {
-    if (!_.isUndefined(this.config[key]))
-      return this.config[key]
-
-    return defaults
+    return this.config.get(key, defaults)
   }
 
   put(key, value) {
-    let config = key
-
-    if (!_.isObject(key)) {
-      config = {}
-      config[key] = value
-    }
-
-    this.config = _.defaults(config, this.config)
+    return this.config.put(key, value)
 
     return this
   }
 
   addHeader(key, value) {
-    let headers = this.get('headers', {})
+    let headers = this.config.get('headers', {})
     headers[key] = value
-    this.put({ headers: headers })
+    this.config.put({ headers: headers })
 
     return this
   }
@@ -77,8 +68,8 @@ class Handler {
 
     let segment = url.split(' ')
     let uri = url
-    let type = this.get('type', 'POST')
-    let query = this.get('query', '')
+    let type = this.config.get('type', 'POST')
+    let query = this.config.get('query', '')
 
     if (segment.length == 1) {
       uri = segment[0]
@@ -98,9 +89,9 @@ class Handler {
       }
     }
 
-    uri = uri.replace(':baseUrl', this.get('baseUrl', ''))
+    uri = uri.replace(':baseUrl', this.config.get('baseUrl', ''))
 
-    this.put({
+    this.config.put({
       dataType: dataType,
       object: object,
       query: query,
@@ -112,16 +103,16 @@ class Handler {
     let id = api(object).attr('id')
 
     if (typeof id != 'undefined')
-      this.put({ id: `#${id}` })
+      this.config.put({ id: `#${id}` })
 
     return this
   }
 
   execute(data) {
     let me = this
-    let name = this.get('name')
-    let object = this.get('object')
-    let query = this.get('query')
+    let name = this.config.get('name')
+    let object = this.config.get('object')
+    let query = this.config.get('query')
 
     if (!_.isObject(data)) {
       data =`${api(object).serialize()}&${query}`
@@ -131,11 +122,11 @@ class Handler {
     this.executed = true
 
     let payload = {
-      type: this.get('type'),
-      dataType: this.get('dataType'),
-      url: this.get('uri'),
+      type: this.config.get('type'),
+      dataType: this.config.get('dataType'),
+      url: this.config.get('uri'),
       data: data,
-      headers: this.get('headers', {}),
+      headers: this.config.get('headers', {}),
       beforeSend: function (xhr) {
         me.fireEvent('beforeSend', name, [me, xhr])
       },
@@ -169,15 +160,15 @@ class Handler {
   }
 }
 
+let RequestAttributes = {
+  baseUrl: null,
+  onError: (data, status) => {},
+  beforeSend: (data, status) => {},
+  onComplete: (data, status) => {}
+}
+
 class Request {
   constructor(name) {
-    this.config = {
-      baseUrl: null,
-      onError: (data, status) => {},
-      beforeSend: (data, status) => {},
-      onComplete: (data, status) => {}
-    }
-
     return Request.make(name)
   }
 
@@ -186,8 +177,8 @@ class Request {
   }
 
   static get(key, defaults = null) {
-    if (!_.isUndefined(Request.config[key]))
-      return Request.config[key]
+    if (!_.isUndefined(RequestAttributes[key]))
+      return RequestAttributes[key]
 
     return defaults
   }
@@ -200,7 +191,7 @@ class Request {
       config[key] = value
     }
 
-    Request.config = _.defaults(config, Request.config)
+    RequestAttributes = _.defaults(config, RequestAttributes)
   }
 
   static find(name) {
@@ -208,7 +199,7 @@ class Request {
 
     if (_.isUndefined(requests[name])) {
       request = new Handler()
-      request.config = _.defaults(request.config, Request.config)
+      request.config = _.defaults(request.config, RequestAttributes)
       request.put({ name: name })
 
       return requests[name] = request
@@ -226,7 +217,7 @@ class Request {
     dispatcher.clone(`Request.onComplete: ${name}`).to(`Request.onComplete: ${name}`)
     dispatcher.clone(`Request.beforeSend: ${name}`).to(`Request.beforeSend: ${name}`)
 
-    child.put(parent.config)
+    child.put(request.config)
 
     return child
   }

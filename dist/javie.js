@@ -188,7 +188,7 @@ var Application = (function () {
 
 exports.default = Application;
 
-},{"./helpers":3,"./vendor/underscore":9}],2:[function(require,module,exports){
+},{"./helpers":3,"./vendor/underscore":10}],2:[function(require,module,exports){
 'use strict';
 
 var _underscore = require('./vendor/underscore');
@@ -246,7 +246,7 @@ app.bind('request', function () {
 
 window.Javie = app;
 
-},{"./Application.es6":1,"./modules/events/Events.es6":4,"./modules/log/Log.es6":5,"./modules/profiler/Profiler.es6":6,"./modules/request/Request.es6":7,"./vendor/underscore":9}],3:[function(require,module,exports){
+},{"./Application.es6":1,"./modules/events/Events.es6":5,"./modules/log/Log.es6":6,"./modules/profiler/Profiler.es6":7,"./modules/request/Request.es6":8,"./vendor/underscore":10}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -269,6 +269,62 @@ function microtime() {
 }
 
 },{}],4:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _underscore = require('../../vendor/underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Configuration = (function () {
+  function Configuration() {
+    var attributes = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    _classCallCheck(this, Configuration);
+
+    this.attributes = attributes;
+  }
+
+  _createClass(Configuration, [{
+    key: 'has',
+    value: function has(key) {
+      return !_underscore2.default.isUndefined(this.attributes[key]);
+    }
+  }, {
+    key: 'get',
+    value: function get(key) {
+      var defaults = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+      return this.has(key) ? this.attributes[key] : defaults;
+    }
+  }, {
+    key: 'put',
+    value: function put(key, value) {
+      var config = key;
+
+      if (!_underscore2.default.isObject(key)) {
+        config = {};
+        config[key] = value;
+      }
+
+      this.attributes = _underscore2.default.defaults(config, this.attributes);
+    }
+  }, {
+    key: 'all',
+    value: function all() {
+      return this.attributes;
+    }
+  }]);
+
+  return Configuration;
+})();
+
+},{"../../vendor/underscore":10}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -436,7 +492,7 @@ var Events = (function () {
 
 exports.default = Events;
 
-},{"../../vendor/underscore":9}],5:[function(require,module,exports){
+},{"../../vendor/underscore":10}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -574,7 +630,7 @@ var Log = (function () {
 
 exports.default = Log;
 
-},{"../../helpers":3}],6:[function(require,module,exports){
+},{"../../helpers":3}],7:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -737,7 +793,7 @@ var Profiler = (function () {
 
 exports.default = Profiler;
 
-},{"../../helpers":3}],7:[function(require,module,exports){
+},{"../../helpers":3}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -749,6 +805,10 @@ Object.defineProperty(exports, "__esModule", {
 var _Events = require('../events/Events.es6');
 
 var _Events2 = _interopRequireDefault(_Events);
+
+var _Config = require('../config/Config.es6');
+
+var _Config2 = _interopRequireDefault(_Config);
 
 var _helpers = require('../../helpers');
 
@@ -783,7 +843,7 @@ var Handler = (function () {
 
     this.executed = false;
     this.response = null;
-    this.config = {
+    this.config = new Configuration({
       name: '',
       type: 'GET',
       uri: '',
@@ -796,7 +856,7 @@ var Handler = (function () {
       beforeSend: function beforeSend() {},
       onComplete: function onComplete() {},
       onError: function onError() {}
-    };
+    });
   }
 
   _createClass(Handler, [{
@@ -804,30 +864,21 @@ var Handler = (function () {
     value: function get(key) {
       var defaults = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-      if (!_.isUndefined(this.config[key])) return this.config[key];
-
-      return defaults;
+      return this.config.get(key, defaults);
     }
   }, {
     key: 'put',
     value: function put(key, value) {
-      var config = key;
-
-      if (!_.isObject(key)) {
-        config = {};
-        config[key] = value;
-      }
-
-      this.config = _.defaults(config, this.config);
+      return this.config.put(key, value);
 
       return this;
     }
   }, {
     key: 'addHeader',
     value: function addHeader(key, value) {
-      var headers = this.get('headers', {});
+      var headers = this.config.get('headers', {});
       headers[key] = value;
-      this.put({ headers: headers });
+      this.config.put({ headers: headers });
 
       return this;
     }
@@ -845,8 +896,8 @@ var Handler = (function () {
 
       var segment = url.split(' ');
       var uri = url;
-      var type = this.get('type', 'POST');
-      var query = this.get('query', '');
+      var type = this.config.get('type', 'POST');
+      var query = this.config.get('query', '');
 
       if (segment.length == 1) {
         uri = segment[0];
@@ -865,9 +916,9 @@ var Handler = (function () {
         }
       }
 
-      uri = uri.replace(':baseUrl', this.get('baseUrl', ''));
+      uri = uri.replace(':baseUrl', this.config.get('baseUrl', ''));
 
-      this.put({
+      this.config.put({
         dataType: dataType,
         object: object,
         query: query,
@@ -878,7 +929,7 @@ var Handler = (function () {
 
       var id = api(object).attr('id');
 
-      if (typeof id != 'undefined') this.put({ id: '#' + id });
+      if (typeof id != 'undefined') this.config.put({ id: '#' + id });
 
       return this;
     }
@@ -886,9 +937,9 @@ var Handler = (function () {
     key: 'execute',
     value: function execute(data) {
       var me = this;
-      var name = this.get('name');
-      var object = this.get('object');
-      var query = this.get('query');
+      var name = this.config.get('name');
+      var object = this.config.get('object');
+      var query = this.config.get('query');
 
       if (!_.isObject(data)) {
         data = api(object).serialize() + '&' + query;
@@ -898,11 +949,11 @@ var Handler = (function () {
       this.executed = true;
 
       var payload = {
-        type: this.get('type'),
-        dataType: this.get('dataType'),
-        url: this.get('uri'),
+        type: this.config.get('type'),
+        dataType: this.config.get('dataType'),
+        url: this.config.get('uri'),
         data: data,
-        headers: this.get('headers', {}),
+        headers: this.config.get('headers', {}),
         beforeSend: function beforeSend(xhr) {
           me.fireEvent('beforeSend', name, [me, xhr]);
         },
@@ -939,16 +990,16 @@ var Handler = (function () {
   return Handler;
 })();
 
+var RequestAttributes = {
+  baseUrl: null,
+  onError: function onError(data, status) {},
+  beforeSend: function beforeSend(data, status) {},
+  onComplete: function onComplete(data, status) {}
+};
+
 var Request = (function () {
   function Request(name) {
     _classCallCheck(this, Request);
-
-    this.config = {
-      baseUrl: null,
-      onError: function onError(data, status) {},
-      beforeSend: function beforeSend(data, status) {},
-      onComplete: function onComplete(data, status) {}
-    };
 
     return Request.make(name);
   }
@@ -965,7 +1016,7 @@ var Request = (function () {
     value: function get(key) {
       var defaults = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-      if (!_.isUndefined(Request.config[key])) return Request.config[key];
+      if (!_.isUndefined(RequestAttributes[key])) return RequestAttributes[key];
 
       return defaults;
     }
@@ -979,7 +1030,7 @@ var Request = (function () {
         config[key] = value;
       }
 
-      Request.config = _.defaults(config, Request.config);
+      RequestAttributes = _.defaults(config, RequestAttributes);
     }
   }, {
     key: 'find',
@@ -988,7 +1039,7 @@ var Request = (function () {
 
       if (_.isUndefined(requests[name])) {
         request = new Handler();
-        request.config = _.defaults(request.config, Request.config);
+        request.config = _.defaults(request.config, RequestAttributes);
         request.put({ name: name });
 
         return requests[name] = request;
@@ -1005,7 +1056,7 @@ var Request = (function () {
       dispatcher.clone('Request.onComplete: ' + name).to('Request.onComplete: ' + name);
       dispatcher.clone('Request.beforeSend: ' + name).to('Request.beforeSend: ' + name);
 
-      child.put(parent.config);
+      child.put(request.config);
 
       return child;
     }
@@ -1016,7 +1067,7 @@ var Request = (function () {
 
 exports.default = Request;
 
-},{"../../helpers":3,"../../vendor/jquery":8,"../../vendor/underscore":9,"../events/Events.es6":4}],8:[function(require,module,exports){
+},{"../../helpers":3,"../../vendor/jquery":9,"../../vendor/underscore":10,"../config/Config.es6":4,"../events/Events.es6":5}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1024,7 +1075,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = jQuery;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
