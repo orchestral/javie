@@ -81,11 +81,15 @@ class Application {
     return this
   }
 
-  trigger(name, options = []) {
+  emit(name, options = []) {
     let events = this.make('event')
     events.fire(name, options)
 
     return this
+  }
+
+  trigger(name, options = []) {
+    return this.emit(name, options)
   }
 
   bind(name, instance) {
