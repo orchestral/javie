@@ -864,7 +864,7 @@ var Handler = (function () {
 
     this.executed = false;
     this.response = null;
-    this.config = new Configuration({
+    this.config = new _Config2.default({
       name: '',
       type: 'GET',
       uri: '',

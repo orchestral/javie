@@ -1,5 +1,5 @@
 import Events from '../events/Events.es6'
-import configuration from '../config/Config.es6'
+import Configuration from '../config/Config.es6'
 import * as Util from '../../helpers'
 import _ from '../../vendor/underscore'
 import api from '../../vendor/jquery'
