@@ -35,6 +35,8 @@ gulp.task('js.min', function () {
     .pipe(gulp.dest(dir.dist));
 });
 
+elixir.config.js.browserify.plugins.push({name: 'bundle-collapser/plugin'});
+
 elixir(function (mix) {
   mix.browserify('app.js', dir.src+'/bundle.js', dir.src);
 
