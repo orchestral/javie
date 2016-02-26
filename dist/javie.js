@@ -988,7 +988,7 @@ var Handler = (function () {
           status = xhr.status;
           me.response = xhr;
 
-          if (!_underscore2.default.isUndefined(data) && data.hasOwnProperty('error')) {
+          if (_underscore2.default.has(data, 'errors')) {
             me.fireEvent('onError', name, [data.errors, status, me, xhr]);
             data.errors = null;
           }

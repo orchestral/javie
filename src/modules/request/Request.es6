@@ -139,7 +139,7 @@ class Handler {
         status = xhr.status
         me.response = xhr
 
-        if (!_.isUndefined(data) && data.hasOwnProperty('error')) {
+        if (_.has(data, 'errors')) {
           me.fireEvent('onError', name, [data.errors, status, me, xhr])
           data.errors = null
         }
