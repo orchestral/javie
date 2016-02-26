@@ -50,6 +50,10 @@ class Handler {
   }
 
   addHeader(key, value) {
+    return this.header(key, value)
+  }
+
+  header(key, value) {
     let headers = this.config.get('headers', {})
     headers[key] = value
     this.config.put({ headers: headers })

@@ -897,6 +897,11 @@ var Handler = (function () {
   }, {
     key: 'addHeader',
     value: function addHeader(key, value) {
+      return this.header(key, value);
+    }
+  }, {
+    key: 'header',
+    value: function header(key, value) {
       var headers = this.config.get('headers', {});
       headers[key] = value;
       this.config.put({ headers: headers });
