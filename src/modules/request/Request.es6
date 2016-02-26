@@ -213,9 +213,9 @@ class Request {
     let key = _.uniqueId(`${name}_`)
     let child = new Handler()
 
-    dispatcher.clone(`Request.onError: ${name}`).to(`Request.onError: ${name}`)
-    dispatcher.clone(`Request.onComplete: ${name}`).to(`Request.onComplete: ${name}`)
-    dispatcher.clone(`Request.beforeSend: ${name}`).to(`Request.beforeSend: ${name}`)
+    dispatcher.clone(`Request.onError: ${name}`).to(`Request.onError: ${key}`)
+    dispatcher.clone(`Request.onComplete: ${name}`).to(`Request.onComplete: ${key}`)
+    dispatcher.clone(`Request.beforeSend: ${name}`).to(`Request.beforeSend: ${key}`)
 
     child.put(request.config)
 
