@@ -44,7 +44,7 @@ class Handler {
   }
 
   put(key, value) {
-    return this.config.put(key, value)
+    this.config.put(key, value)
 
     return this
   }

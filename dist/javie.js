@@ -890,7 +890,7 @@ var Handler = (function () {
   }, {
     key: 'put',
     value: function put(key, value) {
-      return this.config.put(key, value);
+      this.config.put(key, value);
 
       return this;
     }
