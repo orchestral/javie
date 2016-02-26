@@ -134,7 +134,7 @@ class Handler {
       beforeSend: function (xhr) {
         me.fireEvent('beforeSend', name, [me, xhr])
       },
-      complete: function (xhr) {
+      always: function (xhr) {
         data = json_parse(xhr.responseText)
         status = xhr.status
         me.response = xhr

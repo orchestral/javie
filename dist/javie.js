@@ -983,7 +983,7 @@ var Handler = (function () {
         beforeSend: function beforeSend(xhr) {
           me.fireEvent('beforeSend', name, [me, xhr]);
         },
-        complete: function complete(xhr) {
+        always: function always(xhr) {
           data = json_parse(xhr.responseText);
           status = xhr.status;
           me.response = xhr;
