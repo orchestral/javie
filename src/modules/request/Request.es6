@@ -131,10 +131,10 @@ class Handler {
       url: this.config.get('uri'),
       data: data,
       headers: this.config.get('headers', {}),
-      beforeSend: function (xhr) {
+      beforeSend: (xhr) => {
         me.fireEvent('beforeSend', name, [me, xhr])
       },
-      always: function (xhr) {
+      complete: (xhr) => {
         data = json_parse(xhr.responseText)
         status = xhr.status
         me.response = xhr
@@ -157,7 +157,7 @@ class Handler {
     dispatcher.fire(`Request.${type}`, args)
     dispatcher.fire(`Request.${type}: ${name}`, args)
 
-    let callback = this.config[type]
+    let callback = this.config.get(type)
 
     if (_.isFunction(callback))
       callback.apply(this, args)

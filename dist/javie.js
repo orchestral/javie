@@ -5,7 +5,7 @@
  *
  * @package Javie
  * @require underscore, console, jQuery/Zepto
- * @version 2.1.0
+ * @version 2.1.1
  * @author  Mior Muhammad Zaki <https://github.com/crynobone>
  * @license MIT License
  * ========================================================================
@@ -983,7 +983,7 @@ var Handler = (function () {
         beforeSend: function beforeSend(xhr) {
           me.fireEvent('beforeSend', name, [me, xhr]);
         },
-        always: function always(xhr) {
+        complete: function complete(xhr) {
           data = json_parse(xhr.responseText);
           status = xhr.status;
           me.response = xhr;
@@ -1007,7 +1007,7 @@ var Handler = (function () {
       dispatcher.fire('Request.' + type, args);
       dispatcher.fire('Request.' + type + ': ' + name, args);
 
-      var callback = this.config[type];
+      var callback = this.config.get(type);
 
       if (_underscore2.default.isFunction(callback)) callback.apply(this, args);
     }
