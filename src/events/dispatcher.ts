@@ -33,7 +33,7 @@ export default class Dispatcher {
     return payload;
   }
 
-  fire(id: string, options: any = []): any {
+  emit(id: string, options: any = []): any {
     if (id == null) {
       throw new Error(`Event ID [${id}] is not available.`);
     }

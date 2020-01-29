@@ -98,7 +98,7 @@ var Javie = (function () {
           events[id].push(callback);
           return payload;
       }
-      fire(id, options = []) {
+      emit(id, options = []) {
           if (id == null) {
               throw new Error(`Event ID [${id}] is not available.`);
           }
