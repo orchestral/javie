@@ -4,17 +4,17 @@ import Dispatcher from './events/dispatcher';
 
 let isFunction = require('lodash').isFunction;
 
+let config = new Configuration();
+
 let setup = function (app: Application) {
   app.singleton('event', () => new Dispatcher());
 };
 
 export default class Application {
-  private config: Configuration;
   private environment: string;
   private instances: any = {};
 
   constructor(environment: string = 'production') {
-    this.config = new Configuration({});
     this.environment = environment;
 
     setup(this);
@@ -33,11 +33,11 @@ export default class Application {
   }
 
   get(key: string, defaults: any = null): any {
-    return this.config.get(key, defaults);
+    return config.get(key, defaults);
   }
 
   put(key: string, value: any): Application {
-    this.config.put(key, value);
+    config.put(key, value);
 
     return this;
   }

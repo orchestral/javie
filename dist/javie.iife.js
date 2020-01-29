@@ -154,13 +154,13 @@ var Javie = (function () {
   }
 
   let isFunction$2 = require('lodash').isFunction;
+  let config = new Configuration();
   let setup = function (app) {
       app.singleton('event', () => new Dispatcher());
   };
   class Application {
       constructor(environment = 'production') {
           this.instances = {};
-          this.config = new Configuration({});
           this.environment = environment;
           setup(this);
       }
@@ -174,10 +174,10 @@ var Javie = (function () {
           return this.environment;
       }
       get(key, defaults = null) {
-          return this.config.get(key, defaults);
+          return config.get(key, defaults);
       }
       put(key, value) {
-          this.config.put(key, value);
+          config.put(key, value);
           return this;
       }
       on(name, callback) {

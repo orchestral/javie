@@ -1,5 +1,4 @@
 export default class Application {
-    private config;
     private environment;
     private instances;
     constructor(environment?: string);
