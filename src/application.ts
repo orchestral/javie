@@ -10,7 +10,7 @@ let setup = function (app: Application) {
 
 export default class Application {
   private config: Configuration;
-  private environment: string = 'production';
+  private environment: string;
   private instances: any = {};
 
   constructor(environment: string = 'production') {

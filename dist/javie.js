@@ -113,8 +113,9 @@ var Dispatcher = /** @class */ (function () {
         return this.dispatch(events[id], options);
     };
     Dispatcher.prototype.first = function (id, options) {
-        if (id == null)
+        if (id == null) {
             throw new Error("Event ID [" + id + "] is not available.");
+        }
         var event = events[id].slice(0, 1);
         var responses = this.dispatch(event, options);
         return responses.shift();
@@ -179,7 +180,6 @@ var setup = function (app) {
 var Application = /** @class */ (function () {
     function Application(environment) {
         if (environment === void 0) { environment = 'production'; }
-        this.environment = 'production';
         this.instances = {};
         this.config = new Configuration({});
         this.environment = environment;

@@ -42,10 +42,11 @@ export default class Dispatcher {
   }
 
   first(id: string, options: any): any {
-    if (id == null)
-      throw new Error(`Event ID [${id}] is not available.`)
+    if (id == null) {
+      throw new Error(`Event ID [${id}] is not available.`);
+    }
 
-    let event = events[id].slice(0, 1)
+    let event = events[id].slice(0, 1);
     let responses = this.dispatch(event, options);
 
     return responses.shift();
