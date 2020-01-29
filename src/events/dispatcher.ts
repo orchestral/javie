@@ -76,7 +76,7 @@ export default class Dispatcher {
     }
 
     each(events[id], (callback: any, key: any) => {
-      if (payload.callback() == callback) {
+      if (payload.resolver() == callback) {
         events[id].splice(key, 1);
       }
     })

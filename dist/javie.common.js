@@ -3,32 +3,35 @@
 let isFunction = require('lodash').isFunction;
 class Container {
     constructor(name, instance, shared = false, resolved = false) {
-        this._shared = false;
-        this._resolved = false;
+        this.isShared = false;
+        this.isResolved = false;
         this.name = name;
         this.instance = instance;
-        this._shared = shared;
-        this._resolved = resolved;
+        this.isShared = shared;
+        this.isResolved = resolved;
+    }
+    alias() {
+        return this.name;
     }
     resolving(options = []) {
-        if (this._shared && this._resolved) {
+        if (this.isShared && this.isResolved) {
             return this.instance;
         }
         let resolved = this.instance;
         if (isFunction(resolved)) {
             resolved = resolved.apply(this, options);
         }
-        if (this._shared) {
+        if (this.isShared) {
             this.instance = resolved;
-            this._resolved = true;
+            this.isResolved = true;
         }
         return resolved;
     }
     resolved() {
-        return this._resolved;
+        return this.isResolved;
     }
     shared() {
-        return this._shared;
+        return this.isShared;
     }
 }
 
@@ -61,14 +64,14 @@ class Configuration {
 
 class Payload {
     constructor(id, callback) {
-        this._id = id;
-        this._callback = callback;
+        this.name = id;
+        this.callback = callback;
     }
     id() {
-        return this._id;
+        return this.name;
     }
-    callback() {
-        return this._callback;
+    resolver() {
+        return this.callback;
     }
 }
 
@@ -129,7 +132,7 @@ class Dispatcher {
             throw new Error(`Event ID [${id}] is not available.`);
         }
         each(events[id], (callback, key) => {
-            if (payload.callback() == callback) {
+            if (payload.resolver() == callback) {
                 events[id].splice(key, 1);
             }
         });
@@ -212,9 +215,126 @@ class Application {
     }
 }
 
+let microtime = function () {
+    let time = new Date().getTime();
+    return parseInt(`${(time / 1000)}`, 10);
+};
+
+class Entry {
+    constructor(id, type, start = null) {
+        this.start = null;
+        this.end = null;
+        this.total = null;
+        this.message = '';
+        if (start == null) {
+            start = microtime();
+        }
+        this.id = id;
+        this.type = type;
+        this.start = start;
+    }
+}
+
+class Collector {
+    constructor(name, logging) {
+        this.entries = [];
+        this.pair = {};
+        this.name = name;
+        this.logging = logging;
+        this.started = microtime();
+    }
+    id() {
+        return this.name;
+    }
+    time(id, message) {
+        if (!this.logging) {
+            return null;
+        }
+        if (id == null) {
+            id = this.entries.length;
+        }
+        let entry = new Entry(id, 'time');
+        entry.message = message.toString();
+        let key = this.pair[`time${id}`];
+        if (typeof key != 'undefined') {
+            this.entries[key] = entry;
+        }
+        else {
+            this.entries.push(entry);
+            this.pair[`time${id}`] = (this.entries.length - 1);
+        }
+        console.time(id);
+        return id;
+    }
+    timeEnd(id, message) {
+        let entry = null;
+        if (!this.logging) {
+            return null;
+        }
+        if (id == null) {
+            id = this.entries.length;
+        }
+        let key = this.pair[`time${id}`];
+        if (typeof key != 'undefined') {
+            console.timeEnd(id);
+            entry = this.entries[key];
+        }
+        else {
+            entry = new Entry(id, 'time', this.started);
+            if (typeof message != 'undefined') {
+                entry.message = message;
+            }
+            this.entries.push(entry);
+            key = (this.entries.length - 1);
+        }
+        let end = entry.end = microtime();
+        let start = entry.start;
+        let total = end - start;
+        entry.total = total;
+        this.entries[key] = entry;
+        return total;
+    }
+    trace() {
+        if (this.logging) {
+            console.trace();
+        }
+    }
+    logs() {
+        return this.entries;
+    }
+    enable() {
+        this.logging = true;
+    }
+    disable() {
+        this.logging = false;
+    }
+}
+
+let profilers = {};
+let logging = false;
+class Profiler {
+    constructor(name) {
+        return Profiler.make(name);
+    }
+    static make(name = 'default') {
+        if (profilers[name] == null)
+            profilers[name] = new Collector(name, logging);
+        return profilers[name];
+    }
+    static enable() {
+        logging = true;
+    }
+    static disable() {
+        logging = false;
+    }
+}
+
 let Javie = new Application();
 Javie.bind('config', (attributes = {}) => {
     return new Configuration(attributes);
+});
+Javie.bind('profiler', (name) => {
+    return name != null ? new Profiler(name) : Profiler;
 });
 
 module.exports = Javie;

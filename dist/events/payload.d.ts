@@ -1,7 +1,7 @@
 export default class Payload {
-    private _id;
-    private _callback;
+    private name;
+    private callback;
     constructor(id: string, callback: any);
     id(): string;
-    callback(): any;
+    resolver(): any;
 }

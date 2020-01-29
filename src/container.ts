@@ -3,18 +3,22 @@ let isFunction = require('lodash').isFunction;
 export default class Container {
   private name: string;
   private instance: any;
-  private _shared: boolean = false;
-  private _resolved: boolean = false;
+  private isShared: boolean = false;
+  private isResolved: boolean = false;
 
   constructor(name: string, instance: any, shared: boolean = false, resolved: boolean = false) {
     this.name = name;
     this.instance = instance;
-    this._shared = shared;
-    this._resolved = resolved;
+    this.isShared = shared;
+    this.isResolved = resolved;
+  }
+
+  alias(): string {
+    return this.name;
   }
 
   resolving(options: any = []): any {
-    if (this._shared && this._resolved) {
+    if (this.isShared && this.isResolved) {
       return this.instance;
     }
 
@@ -24,20 +28,20 @@ export default class Container {
       resolved = resolved.apply(this, options);
     }
 
-    if (this._shared) {
+    if (this.isShared) {
       this.instance = resolved;
-      this._resolved = true;
+      this.isResolved = true;
     }
 
     return resolved;
   }
 
   resolved(): boolean {
-    return this._resolved;
+    return this.isResolved;
   }
 
   shared(): boolean {
-    return this._shared;
+    return this.isShared;
   }
 }
 
