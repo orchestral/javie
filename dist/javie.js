@@ -162,20 +162,9 @@ var Dispatcher = /** @class */ (function () {
     return Dispatcher;
 }());
 
-var instance = new Dispatcher();
-var Events = /** @class */ (function () {
-    function Events() {
-        return Events.make();
-    }
-    Events.make = function () {
-        return instance;
-    };
-    return Events;
-}());
-
 var isFunction$2 = require('lodash').isFunction;
 var setup = function (app) {
-    app.singleton('event', function () { return new Events(); });
+    app.singleton('event', function () { return new Dispatcher(); });
 };
 var Application = /** @class */ (function () {
     function Application(environment) {

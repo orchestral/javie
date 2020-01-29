@@ -1,11 +1,11 @@
 import Container from './container';
 import Configuration from './configuration';
-import Events from './events';
+import Dispatcher from './events/dispatcher';
 
 let isFunction = require('lodash').isFunction;
 
 let setup = function (app: Application) {
-  app.singleton('event', () => new Events());
+  app.singleton('event', () => new Dispatcher());
 };
 
 export default class Application {
