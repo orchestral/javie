@@ -6,4 +6,3 @@ export default class Configuration {
     put(key: any, value: any): void;
     all(): any;
 }
-//# sourceMappingURL=configuration.d.ts.map

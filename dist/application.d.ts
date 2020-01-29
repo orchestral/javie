@@ -15,4 +15,3 @@ export default class Application {
     when(environment: string, callback: any): any;
     run(callback: any): any;
 }
-//# sourceMappingURL=application.d.ts.map

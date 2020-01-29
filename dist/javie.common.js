@@ -1,3 +1,5 @@
+'use strict';
+
 let isFunction = require('lodash').isFunction;
 class Container {
     constructor(name, instance, shared = false, resolved = false) {
@@ -215,4 +217,4 @@ Javie.bind('config', (attributes = {}) => {
     return new Configuration(attributes);
 });
 
-export default Javie;
+module.exports = Javie;

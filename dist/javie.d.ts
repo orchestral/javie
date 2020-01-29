@@ -1,4 +1,3 @@
 import Application from './application';
-declare let app: Application;
-export default app;
-//# sourceMappingURL=javie.d.ts.map
+declare let Javie: Application;
+export default Javie;

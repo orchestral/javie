@@ -9,4 +9,3 @@ export default class Dispatcher {
     forget(payload: Payload): void;
     dispatch(queued: any, options?: any, halt?: boolean): any;
 }
-//# sourceMappingURL=dispatcher.d.ts.map

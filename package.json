@@ -2,7 +2,9 @@
   "name": "javie",
   "description": "Javie Client-side JavaScript Library",
   "version": "3.0.0",
-  "main": "dist/javie.js",
+  "main": "dist/javie.common.js",
+  "module": "dist/javie.js",
+  "types": "dist/javie.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/orchestral/javie.git"

@@ -5,4 +5,3 @@ export default class Payload {
     id(): string;
     callback(): any;
 }
-//# sourceMappingURL=payload.d.ts.map

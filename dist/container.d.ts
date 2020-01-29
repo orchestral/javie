@@ -8,4 +8,3 @@ export default class Container {
     resolved(): boolean;
     shared(): boolean;
 }
-//# sourceMappingURL=container.d.ts.map
